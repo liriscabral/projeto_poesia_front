@@ -1,0 +1,30 @@
+.login-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 40px;
+  background: #000;
+  border-radius: 16px;
+  border: 1px solid #2f3336;
+  text-align: center;
+  color: #e7e9ea;
+}
+
+.login-container h2 {
+  margin-bottom: 32px;
+  font-size: 31px;
+  font-weight: 700;
+  color: #e7e9ea;
+}
+
+.mensagem-login {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.mensagem-login:not(:empty) {
+  background-color: #1d9bf0;
+  color: #fff;
+} 
