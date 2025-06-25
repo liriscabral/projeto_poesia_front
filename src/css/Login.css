@@ -16,6 +16,14 @@
   color: #e7e9ea;
 }
 
+.erro-campo {
+  color: #f4212e;
+  font-size: 13px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
 .mensagem-login {
   margin-top: 20px;
   padding: 12px;

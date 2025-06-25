@@ -7,10 +7,37 @@ function Login() {
   const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
+  const [erros, setErros] = useState({});
+
+  const validarEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const validarFormulario = () => {
+    const novosErros = {};
+
+    // Validar se o login está preenchido
+    if (!login.trim()) {
+      novosErros.login = 'O login é obrigatório';
+    } 
+    // Validar se a senha está preenchida
+    if (!senha.trim()) {
+      novosErros.senha = 'A senha é obrigatória';
+    }
+
+    setErros(novosErros);
+    return Object.keys(novosErros).length === 0;
+    };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setMensagem('');
+    
+    if (!validarFormulario()) {
+      return;
+    }
+
     try {
       const resposta = await fetch('http://localhost:8080/acesso/login', {
         method: 'POST',
@@ -40,6 +67,8 @@ function Login() {
           name="login"
           placeholder="Insira seu email"
         />
+        {erros.login && <div className="erro-campo">{erros.login}</div>}
+        
         <Campo
           label="Senha"
           type="password"
@@ -48,6 +77,8 @@ function Login() {
           name="senha"
           placeholder="Insira sua senha"
         />
+        {erros.senha && <div className="erro-campo">{erros.senha}</div>}
+        
         <Botao texto="Entrar" tipo="submit" />
       </form>
       {mensagem && <div className="mensagem-login">{mensagem}</div>}
