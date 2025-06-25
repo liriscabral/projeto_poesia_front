@@ -21,6 +21,7 @@
   color: #e7e9ea;
   outline: none;
   transition: border 0.2s;
+  padding-right: 44px;
 }
 
 .campo input:focus {
@@ -29,4 +30,9 @@
 
 .campo input::placeholder {
   color: #71767b;
+}
+
+.campo-senha input {
+  width: 100%;
+  box-sizing: border-box;
 } 

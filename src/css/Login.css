@@ -16,6 +16,45 @@
   color: #e7e9ea;
 }
 
+.campo-senha {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.campo-senha input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 44px;
+}
+
+.botao-mostrar-senha {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #1d9bf0;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 0;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.botao-mostrar-senha svg {
+  width: 22px;
+  height: 22px;
+}
+
+.botao-mostrar-senha:hover {
+  background-color: rgba(29, 155, 240, 0.1);
+}
+
 .erro-campo {
   color: #f4212e;
   font-size: 13px;

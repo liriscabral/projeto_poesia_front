@@ -6,6 +6,7 @@ import '../css/Login.css';
 function Login() {
   const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mensagem, setMensagem] = useState('');
   const [erros, setErros] = useState({});
 
@@ -69,14 +70,29 @@ function Login() {
         />
         {erros.login && <div className="erro-campo">{erros.login}</div>}
         
-        <Campo
-          label="Senha"
-          type="password"
-          value={senha}
-          onChange={e => setSenha(e.target.value)}
-          name="senha"
-          placeholder="Insira sua senha"
-        />
+        <div className="campo-senha">
+          <Campo
+            label="Senha"
+            type={mostrarSenha ? "text" : "password"}
+            value={senha}
+            onChange={e => setSenha(e.target.value)}
+            name="senha"
+            placeholder="Insira sua senha"
+          />
+          {senha && (
+            <button 
+              type="button" 
+              className="botao-mostrar-senha"
+              onClick={() => setMostrarSenha(!mostrarSenha)}
+              aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="12" cy="12" rx="7" ry="5" stroke="#e7e9ea" strokeWidth="2" fill="none" />
+                <circle cx="12" cy="12" r="2" fill="#e7e9ea" />
+              </svg>
+            </button>
+          )}
+        </div>
         {erros.senha && <div className="erro-campo">{erros.senha}</div>}
         
         <Botao texto="Entrar" tipo="submit" />
