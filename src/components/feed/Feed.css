@@ -1,0 +1,39 @@
+/* Feed.css */
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: calc(100vh - 200px); /* Altura máxima menos o espaço do cabeçalho e form */
+  overflow-y: auto; /* Habilita a rolagem vertical */
+  padding-right: 10px; /* Espaço para a barra de rolagem */
+  scrollbar-width: thin; /* Para navegadores Firefox */
+  scrollbar-color: #1da1f2 #f0f2f5; /* Para navegadores Firefox */
+}
+
+/* Estilizando a barra de rolagem para WebKit (Chrome, Safari) */
+.posts-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.posts-container::-webkit-scrollbar-track {
+  background: #f0f2f5;
+  border-radius: 3px;
+}
+
+.posts-container::-webkit-scrollbar-thumb {
+  background-color: #1da1f2;
+  border-radius: 3px;
+}
+
+.feed {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  width: 100%;
+}
+
+.post {
+  width: 100%;
+  box-sizing: border-box;
+}

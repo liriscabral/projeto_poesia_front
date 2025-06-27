@@ -1,0 +1,127 @@
+/* Estilos Gerais */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: #f8f9fa;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px;
+  transition: transform 0.3s ease;
+  z-index: 100;
+}
+
+.sidebar-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1da1f2;
+  margin-bottom: 30px;
+  padding-left: 10px;
+}
+
+/* Itens do Menu */
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 80px);
+}
+
+/* Adicione estas regras ao seu Sidebar.css existente */
+
+.sidebar li {
+  padding: 12px 15px;
+  margin: 4px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+}
+
+.sidebar li span {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.sidebar li.active {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.sidebar li.active svg {
+  font-weight: bold;
+}
+
+.sidebar-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 30px;
+  padding: 10px;
+}
+
+/* Ícones específicos */
+.sidebar .icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar li:hover {
+  background-color: #e8f4fc;
+}
+
+.sidebar li.active {
+  background-color: #e1f0fa;
+  color: #1da1f2;
+  font-weight: 500;
+}
+
+
+
+.sidebar .bottom-item {
+  margin-top: auto;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 15px;
+}
+
+/* Responsividade */
+.mobile-menu-button {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 101;
+  background: #1da1f2;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .mobile-menu-button {
+    display: block;
+  }
+}
+

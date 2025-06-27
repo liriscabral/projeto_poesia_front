@@ -1,0 +1,93 @@
+/* Post.css */
+.post {
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.post strong {
+  color: #1da1f2;
+  font-size: 1.1rem;
+}
+
+.post p {
+  margin: 10px 0;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #333;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: all 0.2s;
+}
+
+.post-actions button:hover {
+  background-color: #f5f5f5;
+}
+
+.post-actions button svg {
+  font-size: 1.1rem;
+}
+
+.post button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1da1f2;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+}
+
+.post button:hover {
+  text-decoration: underline;
+}
+
+/* Feed.css - Adicionar */
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.post {
+  width: 100%; /* Posts ocupam toda a largura */
+  box-sizing: border-box; /* Inclui padding na largura */
+}
+
+.post h4 {
+  margin: 5px 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.post-category {
+  display: inline-block;
+  background-color: #e1f0fa;
+  color: #1da1f2;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
