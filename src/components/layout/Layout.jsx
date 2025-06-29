@@ -1,9 +1,7 @@
-
 import React, {useState, useEffect} from 'react';
 import './Layout.css';
 import Sidebar from '../sidebar/Sidebar';
 import Feed from '../feed/Feed';
-import Rightbar from '../rightbar/Righbar';
 import PostForm from '../Postform/Postform';
 
 
@@ -47,22 +45,12 @@ function Layout() {
   return (
     <div className="layout">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      {isMobile && (
-        <button className="mobile-menu-button" onClick={toggleSidebar}>
-          ☰
-        </button>
-      )}
-      <main className="content">
-        <div className="main-content">
-          <div className="feed-container">
-            <div className="post-form-container">
-              <PostForm onPublish={adicionarPoesia} usuarioId={1} />
-            </div>
-            <Feed poesias={poesias} />
-          </div>
-          <Rightbar />
+      <div style={{marginLeft: '260px', padding: '40px', maxWidth: '800px'}}>
+        <div className="post-form-container">
+          <PostForm onPublish={adicionarPoesia} usuarioId={1} />
         </div>
-      </main>
+        <Feed poesias={poesias} />
+      </div>
     </div>
   );
 }

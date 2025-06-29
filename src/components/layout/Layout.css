@@ -28,8 +28,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  height: calc(100vh - 40px); /* Ajuste conforme necessário */
-  overflow: hidden; /* Impede rolagem dupla */
+  min-height: calc(100vh - 40px); /* Mudado de height para min-height */
 }
 
 .post-form-container {
@@ -49,21 +48,6 @@
   border-left: 1px solid #e0e0e0;
   padding: 20px;
   overflow-y: auto;
-}
-
-/* Sidebar adjustments */
-.sidebar {
-  width: 250px;
-  height: 100vh;
-  position: fixed;
-  left: 0;
-  top: 0;
-  background-color: #fff;
-  border-right: 1px solid #e0e0e0;
-  padding: 20px;
-  transition: transform 0.3s ease;
-  z-index: 100;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.05);
 }
 
 /* Mobile menu button */
@@ -93,9 +77,6 @@
 }
 
 @media (max-width: 992px) {
-  .sidebar {
-    width: 220px;
-  }
   .content {
     margin-left: 220px;
   }
@@ -105,14 +86,6 @@
   .content {
     margin-left: 0;
     margin-right: 0;
-  }
-  
-  .sidebar {
-    transform: translateX(-100%);
-  }
-  
-  .sidebar.mobile-open {
-    transform: translateX(0);
   }
   
   .rightbar {
