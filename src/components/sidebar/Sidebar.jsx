@@ -31,7 +31,7 @@ function Sidebar({ isOpen, onClose }) {
       icon: location.pathname === '/salvos' ? <IoBookmarkSharp size={24} /> : <IoBookmarkOutline size={24} /> },
     { id: 'perfil', label: 'Perfil', path: '/perfil', 
       icon: location.pathname === '/perfil' ? <IoPersonSharp size={24} /> : <IoPersonOutline size={24} /> },
-    { id: 'sair', label: 'Sair', path: '/logout', 
+    { id: 'cadastroUsuario', label: 'Cadastrar', path: '/cadastroUsuario', 
       icon: <IoLogOutOutline size={24} />, isBottom: true }
   ];
 
