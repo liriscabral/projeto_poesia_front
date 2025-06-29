@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 
 import { FaThreads } from 'react-icons/fa6';
@@ -17,20 +18,20 @@ import {
 } from 'react-icons/io5';
 
 function Sidebar({ isOpen, onClose }) {
-  const [activeItem, setActiveItem] = useState('inicio');
+  const location = useLocation();
 
   const menuItems = [
-    { id: 'inicio', label: 'Início', 
-      icon: activeItem === 'inicio' ? <IoHomeSharp size={24} /> : <IoHomeOutline size={24} /> },
-    { id: 'explorar', label: 'Explorar', 
-      icon: activeItem === 'explorar' ? <IoSearchSharp size={24} /> : <IoSearchOutline size={24} /> },
-    { id: 'curtidas', label: 'Curtidas', 
-      icon: activeItem === 'curtidas' ? <IoHeartSharp size={24} /> : <IoHeartOutline size={24} /> },
-    { id: 'salvos', label: 'Salvos', 
-      icon: activeItem === 'salvos' ? <IoBookmarkSharp size={24} /> : <IoBookmarkOutline size={24} /> },
-    { id: 'perfil', label: 'Perfil', 
-      icon: activeItem === 'perfil' ? <IoPersonSharp size={24} /> : <IoPersonOutline size={24} /> },
-    { id: 'sair', label: 'Sair', 
+    { id: 'inicio', label: 'Início', path: '/', 
+      icon: location.pathname === '/' ? <IoHomeSharp size={24} /> : <IoHomeOutline size={24} /> },
+    { id: 'explorar', label: 'Explorar', path: '/explorar', 
+      icon: location.pathname === '/explorar' ? <IoSearchSharp size={24} /> : <IoSearchOutline size={24} /> },
+    { id: 'curtidas', label: 'Curtidas', path: '/curtidas', 
+      icon: location.pathname === '/curtidas' ? <IoHeartSharp size={24} /> : <IoHeartOutline size={24} /> },
+    { id: 'salvos', label: 'Salvos', path: '/salvos', 
+      icon: location.pathname === '/salvos' ? <IoBookmarkSharp size={24} /> : <IoBookmarkOutline size={24} /> },
+    { id: 'perfil', label: 'Perfil', path: '/perfil', 
+      icon: location.pathname === '/perfil' ? <IoPersonSharp size={24} /> : <IoPersonOutline size={24} /> },
+    { id: 'sair', label: 'Sair', path: '/logout', 
       icon: <IoLogOutOutline size={24} />, isBottom: true }
   ];
 
@@ -47,11 +48,12 @@ function Sidebar({ isOpen, onClose }) {
           {menuItems.map((item) => (
             <li
               key={item.id}
-              className={`${activeItem === item.id ? 'active' : ''} ${item.isBottom ? 'bottom-item' : ''}`}
-              onClick={() => setActiveItem(item.id)}
+              className={`${location.pathname === item.path ? 'active' : ''} ${item.isBottom ? 'bottom-item' : ''}`}
             >
-              {item.icon}
-              <span>{item.label}</span>
+              <Link to={item.path} className="sidebar-link">
+                {item.icon}
+                <span>{item.label}</span>
+              </Link>
             </li>
           ))}
         </ul>
