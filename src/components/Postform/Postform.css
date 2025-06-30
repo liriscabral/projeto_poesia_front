@@ -43,12 +43,12 @@
 }
 
 .post-form textarea {
-  width: 100%;
+  width: calc(100% - 24px); /* Ajuste para margens iguais */
   border: 1px solid #ddd;
   resize: none;
   font-size: 1rem;
   padding: 12px;
-  margin-bottom: 10px;
+  margin: 0 0 10px 0; /* Margem igual em todos os lados exceto bottom */
   min-height: 80px;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -60,18 +60,35 @@
   box-shadow: 0 0 0 2px #1da1f2;
 }
 
-.post-form button[type="submit"] {
-  background-color: #1da1f2;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s;
-  float: right;
+.post-form-container {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #f0f0f0;
+  margin-top: 20px;
+  position: relative;
 }
 
-.post-form button[type="submit"]:hover {
-  background-color: #1991db;
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.back-button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
 }

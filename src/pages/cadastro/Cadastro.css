@@ -1,0 +1,126 @@
+/* Estilos base */
+.cadastro-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding: 20px;
+}
+
+.cadastro-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 100%;
+  max-width: 500px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.cadastro-card h2 {
+  color: #2d3748;
+  font-size: 28px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.cadastro-card p {
+  color: #718096;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* Formulário */
+.form-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.form-group .input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0aec0;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px 14px 48px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #4299e1;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+.form-group.error input {
+  border-color: #f56565;
+}
+
+.form-group.error input:focus {
+  box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.2);
+}
+
+.error-message {
+  display: block;
+  color: #f56565;
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+/* Botão */
+button[type="submit"] {
+  margin-top: 10px;
+}
+
+/* Link de login */
+.login-link {
+  text-align: center;
+  margin-top: 24px;
+  color: #718096;
+}
+
+.login-link a {
+  color: #4299e1;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .cadastro-card {
+    padding: 30px 20px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  .cadastro-container {
+    align-items: flex-start;
+    padding-top: 40px;
+    background: white;
+  }
+}
+

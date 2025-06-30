@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './Postform.css';
 import Alert from '../alerta/Alerta';
 import { categoriaService } from '../../services/api/Api';
+import Button from '../button/Button';
 
-function PostForm({ onPublish, usuarioId }) {
+function PostForm({ onPublish, usuarioId, onClose }) {
   const [texto, setTexto] = useState('');
   const [titulo, setTitulo] = useState('');
-  const [categoria, setCategoria] = useState('');
+  const [categoriaId, setCategoriaId] = useState('');
   const [novaCategoria, setNovaCategoria] = useState('');
   const [categorias, setCategorias] = useState([]);
   const [alert, setAlert] = useState(null);
@@ -18,11 +19,11 @@ function PostForm({ onPublish, usuarioId }) {
       setLoading(true);
       try {
         const response = await categoriaService.listarCategorias();
-        setCategorias(response.map(cat => cat.nome));
+        setCategorias(response);
       } catch (error) {
         console.error('Erro ao carregar categorias:', error);
         setAlert({
-          message: 'Erro ao carregar categorias. Tente recarregar a página.',
+          message: error.response?.data?.message || 'Erro ao carregar categorias. Tente recarregar a página.',
           type: 'error'
         });
       } finally {
@@ -36,25 +37,28 @@ function PostForm({ onPublish, usuarioId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!titulo.trim()) {
+    const trimmedTitulo = titulo.trim();
+    const trimmedTexto = texto.trim();
+    
+    if (!trimmedTitulo || trimmedTitulo.length < 3) {
       setAlert({
-        message: 'Por favor, insira um título para sua poesia',
+        message: 'O título deve ter pelo menos 3 caracteres',
         type: 'error'
       });
       return;
     }
     
-    if (!categoria.trim()) {
+    if (!categoriaId) {
       setAlert({
-        message: 'Por favor, selecione ou crie uma categoria',
+        message: 'Por favor, selecione uma categoria',
         type: 'error'
       });
       return;
     }
     
-    if (!texto.trim()) {
+    if (!trimmedTexto || trimmedTexto.length < 10) {
       setAlert({
-        message: 'Por favor, escreva sua poesia antes de publicar',
+        message: 'A poesia deve ter pelo menos 10 caracteres',
         type: 'error'
       });
       return;
@@ -62,18 +66,25 @@ function PostForm({ onPublish, usuarioId }) {
 
     try {
       setLoading(true);
-      await onPublish({ titulo, texto, categoria });
+      await onPublish({ 
+        titulo: trimmedTitulo, 
+        conteudo: trimmedTexto,  
+        categoriaId: categoriaId,
+        usuarioId: usuarioId   
+      });
       setTexto('');
       setTitulo('');
-      setCategoria('');
+      setCategoriaId('');
       setAlert({
         message: 'Poesia publicada com sucesso!',
         type: 'success'
       });
     } catch (error) {
-      setAlert({
-        message: 'Erro ao publicar poesia. Tente novamente.',
-        type: 'error'
+      setAlert({ 
+        message: error.response?.data?.message || 
+               error.message || 
+               'Erro ao publicar poesia. Tente novamente.', 
+        type: 'error' 
       });
     } finally {
       setLoading(false);
@@ -83,45 +94,34 @@ function PostForm({ onPublish, usuarioId }) {
   const handleAddCategoria = async (e) => {
     e.preventDefault();
     
-    if (!novaCategoria.trim()) {
-      setAlert({
-        message: 'Por favor, insira um nome para a nova categoria',
-        type: 'error'
-      });
+    const categoriaTrimmed = novaCategoria.trim();
+    if (!categoriaTrimmed) {
+      setAlert({ message: 'Por favor, insira um nome para a nova categoria', type: 'error' });
       return;
     }
 
-    if (categorias.some(cat => cat.toLowerCase() === novaCategoria.toLowerCase())) {
-      setAlert({
-        message: 'Esta categoria já existe',
-        type: 'error'
-      });
+    if (categorias.some(cat => cat.nome.toLowerCase() === categoriaTrimmed.toLowerCase())) {
+      setAlert({ message: 'Esta categoria já existe', type: 'error' });
       return;
     }
 
     try {
       setIsAddingCategory(true);
-      await categoriaService.salvarCategoria({ 
-        nome: novaCategoria, 
-        usuarioId: usuarioId
+      const response = await categoriaService.salvarCategoria({ 
+        nome: categoriaTrimmed, 
+        usuarioId
       });
       
-      // Atualiza a lista de categorias sem precisar recarregar tudo
-      setCategorias([...categorias, novaCategoria]);
-      setCategoria(novaCategoria);
+      setCategoriaId(response.id);
       setNovaCategoria('');
-      setAlert({
-        message: 'Nova categoria adicionada!',
-        type: 'success'
-      });
+      setCategorias([...categorias, response]);
+      setAlert({ message: 'Nova categoria adicionada com sucesso!', type: 'success' });
     } catch (error) {
-      console.error('Erro ao adicionar categoria:', error);
-      const errorMessage = error.response?.data?.message || 
-                         error.message || 
-                         'Erro ao adicionar nova categoria';
-      setAlert({
-        message: errorMessage,
-        type: 'error'
+      setAlert({ 
+        message: error.response?.data?.message || 
+               error.message || 
+               'Erro ao adicionar nova categoria', 
+        type: 'error' 
       });
     } finally {
       setIsAddingCategory(false);
@@ -141,6 +141,7 @@ function PostForm({ onPublish, usuarioId }) {
           onClose={closeAlert}
         />
       )}
+      
       <form className="post-form" onSubmit={handleSubmit}>
         <div className="form-row">
           <input
@@ -150,22 +151,25 @@ function PostForm({ onPublish, usuarioId }) {
             onChange={(e) => setTitulo(e.target.value)}
             className="form-input"
             disabled={loading}
+            maxLength={100}
             required
           />
+          
           <select
-            value={categoria}
-            onChange={(e) => setCategoria(e.target.value)}
+            value={categoriaId}
+            onChange={(e) => setCategoriaId(e.target.value)}
             className="form-select"
             disabled={loading || isAddingCategory}
             required
           >
             <option value="">Selecione uma categoria *</option>
-            {categorias.map((cat, index) => (
-              <option key={index} value={cat}>
-                {cat}
+            {categorias.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.nome}
               </option>
             ))}
           </select>
+          
           <div className="new-category-container">
             <input
               type="text"
@@ -174,31 +178,48 @@ function PostForm({ onPublish, usuarioId }) {
               onChange={(e) => setNovaCategoria(e.target.value)}
               className="form-input"
               disabled={loading || isAddingCategory}
+              maxLength={50}
             />
-            <button 
+            <button
               onClick={handleAddCategoria}
               className="add-category-button"
               type="button"
               disabled={loading || isAddingCategory || !novaCategoria.trim()}
+              aria-label="Adicionar nova categoria"
             >
               {isAddingCategory ? '...' : '+'}
             </button>
           </div>
         </div>
+        
         <textarea
           placeholder="Compartilhe sua poesia... *"
           value={texto}
           onChange={(e) => setTexto(e.target.value)}
-          rows="3"
+          rows={5}
           disabled={loading}
+          maxLength={2000}
           required
         />
-        <button 
-          type="submit" 
-          disabled={loading || isAddingCategory}
-        >
-          {loading ? 'Publicando...' : 'Publicar'}
-        </button>
+        
+        <div className="form-actions">
+          <Button 
+            type="button"
+            variant="secondary"
+            onClick={onClose}
+            disabled={loading || isAddingCategory}
+          >
+            Voltar
+          </Button>
+          <Button 
+            type="submit"
+            variant="primary"
+            disabled={loading || isAddingCategory}
+            loading={loading}
+          >
+            {loading ? 'Publicando...' : 'Publicar'}
+          </Button>
+        </div>
       </form>
     </div>
   );

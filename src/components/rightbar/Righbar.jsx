@@ -1,17 +1,23 @@
 import React from 'react';
-import './Righbar'; 
+import './Righbar.css';
 
-function Rightbar() {
-   return (
-    <div className="rightbar">
-      <h3>Sugestões</h3>
-      <ul>
-        <li>@poeta_do_amanha</li>
-        <li>@versoslivres</li>
-        <li>@delza_poesia</li>
-      </ul>
+function Righbar() {
+  return (
+    <div className="righbar">
+      <div className="righbar-header">
+        <h3>Sugestões</h3>
+      </div>
+      <div className="righbar-content">
+        <ul>
+          <li>poeta_do_amanha</li>
+          <li>versoslivres</li>
+          <li>delza_poesia</li>
+          <li>poesia_moderna</li>
+          <li>versos_urbanos</li>
+        </ul>
+      </div>
     </div>
   );
 }
 
-export default Rightbar;
+export default Righbar;
