@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
+import { useAuth } from '../contexts/AuthContext';
 import './loginUsuario.css';
 
 function LoginUsuario() {
@@ -12,6 +13,7 @@ function LoginUsuario() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,10 +88,17 @@ function LoginUsuario() {
       });
 
       if (response.ok) {
-        const result = await response.text();
+        const result = await response.json();
         console.log('Login realizado com sucesso:', result);
-        setLoading(false);
-        navigate('/home');
+        
+        if (result.usuario) {
+          login(result.usuario);
+          setLoading(false);
+          navigate('/home');
+        } else {
+          setLoading(false);
+          setErrors({ submit: 'Erro: dados do usuário não recebidos!' });
+        }
       } else {
         const errorData = await response.text();
         console.error('Erro no login:', errorData);

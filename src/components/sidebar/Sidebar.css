@@ -1,23 +1,26 @@
-/* Estilos Gerais */
+/* Sidebar estilo X (Twitter) */
 .sidebar {
-  width: 250px;
+  width: 260px;
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  background-color: #f8f9fa;
-  border-right: 1px solid #e0e0e0;
-  padding: 20px;
+  background: #15181c;
+  border-right: 1px solid #222327;
+  padding: 24px 0 24px 0;
   transition: transform 0.3s ease;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-title {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: 700;
   color: #1da1f2;
-  margin-bottom: 30px;
-  padding-left: 10px;
+  margin-bottom: 40px;
+  padding-left: 32px;
+  letter-spacing: 1px;
 }
 
 /* Itens do Menu */
@@ -27,90 +30,63 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 80px);
+  height: 100%;
 }
 
 /* Adicione estas regras ao seu Sidebar.css existente */
 
 .sidebar li {
-  padding: 12px 15px;
-  margin: 4px 0;
-  border-radius: 8px;
+  padding: 12px 32px;
+  margin: 6px 0;
+  border-radius: 32px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 16px;
-  font-size: 1.1rem;
-  transition: all 0.2s;
+  gap: 18px;
+  font-size: 1.18rem;
+  color: #d9d9d9;
+  transition: background 0.2s, color 0.2s;
 }
 
-.sidebar li span {
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.sidebar li.active {
-  background-color: #f5f5f5;
-  font-weight: 600;
-}
-
-.sidebar li.active svg {
-  font-weight: bold;
-}
-
-.sidebar-title {
-  display: flex;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #000;
-  margin-bottom: 30px;
-  padding: 10px;
-}
-
-/* Ícones específicos */
-.sidebar .icon {
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sidebar li:hover {
-  background-color: #e8f4fc;
-}
-
-.sidebar li.active {
-  background-color: #e1f0fa;
+.sidebar li.active, .sidebar li:hover {
+  background: #222327;
   color: #1da1f2;
-  font-weight: 500;
 }
 
-/* Estilos para os links do React Router */
-.sidebar-link {
+.sidebar li.active svg, .sidebar li:hover svg {
+  color: #1da1f2;
+}
+
+.sidebar-link, .logout-button {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   text-decoration: none;
   color: inherit;
   width: 100%;
   height: 100%;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
 }
 
-.sidebar-link:hover {
-  text-decoration: none;
-  color: inherit;
+.logout-button {
+  color: #f4212e;
+  font-weight: 600;
+  border-radius: 32px;
+  transition: background 0.2s, color 0.2s;
 }
-
-.sidebar li.active .sidebar-link {
-  color: #1da1f2;
+.logout-button:hover {
+  background: #2a2323;
+  color: #fff;
 }
 
 .sidebar .bottom-item {
   margin-top: auto;
-  border-top: 1px solid #e0e0e0;
-  padding-top: 15px;
+  border-top: 1px solid #222327;
+  padding-top: 20px;
 }
 
 /* Responsividade */
@@ -126,6 +102,26 @@
   padding: 8px 12px;
   border-radius: 4px;
   font-size: 1.2rem;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 70px;
+    padding: 24px 0;
+  }
+  .sidebar-title {
+    font-size: 1.2rem;
+    padding-left: 10px;
+    margin-bottom: 20px;
+  }
+  .sidebar li {
+    padding: 12px 10px;
+    gap: 0;
+    justify-content: center;
+  }
+  .sidebar li span {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {

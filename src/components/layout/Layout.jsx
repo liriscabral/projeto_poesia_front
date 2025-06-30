@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 import './Layout.css';
 import Sidebar from '../sidebar/Sidebar';
 import Feed from '../feed/Feed';
 import PostForm from '../Postform/Postform';
 
-
 function Layout() {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { usuario } = useAuth();
 
   const [poesias, setPoesias] = useState([
     { autor: 'William Sanhá', conteudo: 'A poesia é a alma que se derrama no papel.' },
@@ -47,7 +48,7 @@ function Layout() {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div style={{marginLeft: '260px', padding: '40px', maxWidth: '800px'}}>
         <div className="post-form-container">
-          <PostForm onPublish={adicionarPoesia} usuarioId={1} />
+          <PostForm onPublish={adicionarPoesia} usuarioId={usuario.id} />
         </div>
         <Feed poesias={poesias} />
       </div>
