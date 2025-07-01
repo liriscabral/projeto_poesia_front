@@ -29,8 +29,6 @@ function Sidebar({ isOpen, onClose }) {
   const menuItems = [
     { id: 'inicio', label: 'Início', path: '/home', 
       icon: location.pathname === '/home' ? <IoHomeSharp size={24} /> : <IoHomeOutline size={24} /> },
-    { id: 'explorar', label: 'Explorar', path: '/explorar', 
-      icon: location.pathname === '/explorar' ? <IoSearchSharp size={24} /> : <IoSearchOutline size={24} /> },
     { id: 'curtidas', label: 'Curtidas', path: '/curtidas', 
       icon: location.pathname === '/curtidas' ? <IoHeartSharp size={24} /> : <IoHeartOutline size={24} /> },
     { id: 'salvos', label: 'Salvos', path: '/salvos', 
@@ -45,8 +43,7 @@ function Sidebar({ isOpen, onClose }) {
     <div className={`sidebar ${isOpen ? 'mobile-open' : ''}`}>
       <div className="sidebar-header">
         <h1 className="sidebar-title">
-          {/* <FaThreads style={{ marginRight: '10px', color: '#000' }} /> */}
-          Poesia Livre
+          Verso Livre
         </h1>
       </div>
       <nav>

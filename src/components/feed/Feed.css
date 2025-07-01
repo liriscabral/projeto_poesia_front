@@ -8,6 +8,8 @@
   padding-right: 10px; /* Espaço para a barra de rolagem */
   scrollbar-width: thin; /* Para navegadores Firefox */
   scrollbar-color: #1da1f2 #f0f2f5; /* Para navegadores Firefox */
+  background-color: transparent;
+  color: #fff;
 }
 
 /* Estilizando a barra de rolagem para WebKit (Chrome, Safari) */
@@ -26,10 +28,11 @@
 }
 
 .feed {
-  background-color: #fff;
-  border-radius: 12px;
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  color: #fff;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   width: 100%;
   min-height: 200px; /* Garante altura mínima */
 }

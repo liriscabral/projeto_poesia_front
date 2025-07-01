@@ -46,7 +46,7 @@ function Layout() {
   return (
     <div className="layout">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div style={{marginLeft: '260px', padding: '40px', maxWidth: '800px'}}>
+      <div className="layout-main-card">
         <div className="post-form-container">
           <PostForm onPublish={adicionarPoesia} usuarioId={usuario.id} />
         </div>

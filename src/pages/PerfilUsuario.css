@@ -13,7 +13,7 @@ body, .perfil-container {
 }
 
 .perfil-card {
-  background-color: #000;
+  background-color: #15181c;
   border: 1px solid #333;
   border-radius: 16px;
   padding: 32px;
@@ -136,14 +136,14 @@ body, .perfil-container {
 }
 
 .categorias-section h2,
-.poemas-section h2 {
+.poesias-section h2 {
   font-size: 1.25rem;
   font-weight: 600;
   color: #fff;
   margin-bottom: 16px;
 }
 
-.poemas-header {
+.poesias-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -184,15 +184,15 @@ body, .perfil-container {
 }
 
 .categorias-list,
-.poemas-list {
+.poesias-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 .categoria-item,
-.poema-item {
-  background-color: #000;
+.poesia-item {
+  background-color: #15181c;
   border: 1px solid #333;
   border-radius: 8px;
   padding: 16px;
@@ -203,30 +203,30 @@ body, .perfil-container {
 }
 
 .categoria-item:hover,
-.poema-item:hover {
+.poesia-item:hover {
   border-color: #1da1f2;
 }
 
 .categoria-nome,
-.poema-titulo {
+.poesia-titulo {
   font-size: 1rem;
   font-weight: 500;
   color: #fff;
   margin: 0;
 }
 
-.poema-info {
+.poesia-info {
   flex: 1;
 }
 
-.poema-conteudo {
+.poesia-conteudo {
   color: #666;
   margin: 8px 0 0 0;
   font-size: 0.875rem;
   line-height: 1.4;
 }
 
-.poema-data {
+.poesia-data {
   color: #666;
   font-size: 0.75rem;
   margin-top: 8px;
@@ -292,7 +292,7 @@ body, .perfil-container {
     justify-content: space-between;
   }
   
-  .poemas-header {
+  .poesias-header {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;

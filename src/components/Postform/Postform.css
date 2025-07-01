@@ -1,5 +1,7 @@
 .post-form {
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-row {
@@ -11,9 +13,15 @@
 .form-input, .form-select {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ddd;
+  background-color: #000;
+  border: 1px solid #333;
+  color: #fff;
   border-radius: 8px;
   font-size: 0.9rem;
+}
+
+.form-input::placeholder, .form-select::placeholder, .post-form textarea::placeholder {
+  color: #666;
 }
 
 .form-input:focus, .form-select:focus {
@@ -44,13 +52,14 @@
 
 .post-form textarea {
   width: 100%;
-  border: 1px solid #ddd;
+  border: 1px solid #333;
+  color: #fff;
   resize: none;
   font-size: 1rem;
   padding: 12px;
   margin-bottom: 10px;
   min-height: 80px;
-  background-color: #f9f9f9;
+  background-color: #000;
   border-radius: 8px;
 }
 
@@ -64,14 +73,53 @@
   background-color: #1da1f2;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
+  padding: 12px 24px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.2s, transform 0.2s;
   float: right;
+  margin-top: 8px;
 }
 
-.post-form button[type="submit"]:hover {
-  background-color: #1991db;
+.post-form button[type="submit"]:hover:not(:disabled) {
+  background-color: #1a91da;
+  transform: translateY(-2px);
+}
+
+.post-form button[type="submit"]:disabled {
+  background-color: #1a91da;
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 480px) {
+  .post-form button[type="submit"] {
+    width: 100%;
+    float: none;
+  }
+}
+
+.post-form-container {
+  background-color: #15181c;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 20px;
+  color: #fff;
+  box-shadow: none;
+  margin-bottom: 20px;
+}
+
+.post-form-actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.post-form-actions button[type="submit"] {
+  width: 100%;
+  max-width: 100%;
 }

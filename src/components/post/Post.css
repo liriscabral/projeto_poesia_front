@@ -1,22 +1,23 @@
 /* Post.css */
 .post {
-  background-color: white;
+  background-color: #15181c;
   padding: 20px;
   margin-bottom: 15px;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #333;
+  color: #fff;
+  box-shadow: none;
 }
 
-.post strong {
+.post strong, .post h4 {
   color: #1da1f2;
-  font-size: 1.1rem;
 }
 
 .post p {
   margin: 10px 0;
   font-size: 1rem;
   line-height: 1.4;
-  color: #333;
+  color: #fff;
 }
 
 .post-actions {
@@ -31,7 +32,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #000;
+  color: #1da1f2;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -83,8 +84,7 @@
 }
 
 .post-category {
-  display: inline-block;
-  background-color: #e1f0fa;
+  background-color: #15181c;
   color: #1da1f2;
   padding: 3px 8px;
   border-radius: 12px;

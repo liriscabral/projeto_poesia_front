@@ -134,6 +134,9 @@ function PostForm({ onPublish, usuarioId }) {
 
   return (
     <div className="post-form-container">
+      <h3 style={{ color: '#1da1f2', marginBottom: '12px', fontWeight: 700, fontSize: '1.1rem' }}>
+        Nova Poesia
+      </h3>
       {alert && (
         <Alert 
           message={alert.message} 
@@ -193,12 +196,14 @@ function PostForm({ onPublish, usuarioId }) {
           disabled={loading}
           required
         />
-        <button 
-          type="submit" 
-          disabled={loading || isAddingCategory}
-        >
-          {loading ? 'Publicando...' : 'Publicar'}
-        </button>
+        <div className="post-form-actions">
+          <button 
+            type="submit" 
+            disabled={loading || isAddingCategory}
+          >
+            {loading ? 'Publicando...' : 'Publicar'}
+          </button>
+        </div>
       </form>
     </div>
   );

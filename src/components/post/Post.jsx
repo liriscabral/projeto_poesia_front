@@ -33,10 +33,6 @@ function Post({ autor, conteudo, titulo = '', categoria = '' }) {
           {saved ? <FaBookmark color="#000" /> : <FaRegBookmark />}
           <span>Salvar</span>
         </button>
-        <button>
-          <FiShare />
-          <span>Compartilhar</span>
-        </button>
       </div>
     </div>
   );

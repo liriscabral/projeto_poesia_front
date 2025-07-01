@@ -7,7 +7,7 @@ import './PerfilUsuario.css';
 function PerfilUsuario() {
   const [activeTab, setActiveTab] = useState('categorias');
   const [categorias, setCategorias] = useState([]);
-  const [poemas, setPoemas] = useState([]);
+  const [poesias, setPoesias] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState('recentes');
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ function PerfilUsuario() {
       if (activeTab === 'categorias') {
         await carregarCategorias();
       } else {
-        await carregarPoemas();
+        await carregarPoesias();
       }
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -47,19 +47,19 @@ function PerfilUsuario() {
     }
   };
 
-  const carregarPoemas = async () => {
+  const carregarPoesias = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/poema/autor/${usuario.id}`);
+      const response = await fetch(`http://localhost:8080/poesia/autor/${usuario.id}`);
       const data = await response.json();
-      const poemasOrdenados = ordenarPoemas(data, sortOrder);
-      setPoemas(poemasOrdenados);
+      const poesiasOrdenadas = ordenarPoesias(data, sortOrder);
+      setPoesias(poesiasOrdenadas);
     } catch (error) {
-      console.error('Erro ao carregar poemas:', error);
+      console.error('Erro ao carregar poesias:', error);
     }
   };
 
-  const ordenarPoemas = (poemas, ordem) => {
-    return [...poemas].sort((a, b) => {
+  const ordenarPoesias = (poesias, ordem) => {
+    return [...poesias].sort((a, b) => {
       const dataA = new Date(a.data);
       const dataB = new Date(b.data);
       return ordem === 'recentes' ? dataB - dataA : dataA - dataB;
@@ -92,8 +92,8 @@ function PerfilUsuario() {
         const errorText = await response.text();
         console.error('Erro na resposta:', errorText);
         
-        if (errorText.includes('poemas associados')) {
-          alert('Não é possível excluir esta categoria pois existem poemas associados a ela. Delete os poemas primeiro.');
+        if (errorText.includes('poesias associadas')) {
+          alert('Não é possível excluir esta categoria pois existem poesias associadas a ela. Delete as poesias primeiro.');
         } else if (errorText.includes('permissão')) {
           alert('Você não tem permissão para excluir esta categoria.');
         } else if (errorText.includes('não encontrada')) {
@@ -108,38 +108,38 @@ function PerfilUsuario() {
     }
   };
 
-  const deletarPoema = async (poemaId) => {
-    if (!window.confirm('Tem certeza que deseja excluir este poema?')) {
+  const deletarPoesia = async (poesiaId) => {
+    if (!window.confirm('Tem certeza que deseja excluir esta poesia?')) {
       return;
     }
 
     try {
-      console.log('Tentando deletar poema:', poemaId, 'do usuário:', usuario.id);
+      console.log('Tentando deletar poesia:', poesiaId, 'do usuário:', usuario.id);
       
-      const response = await fetch(`http://localhost:8080/poema/${poemaId}/${usuario.id}`, {
+      const response = await fetch(`http://localhost:8080/poesia/${poesiaId}/${usuario.id}`, {
         method: 'DELETE'
       });
 
       console.log('Response status:', response.status);
 
       if (response.ok) {
-        console.log('Poema deletado com sucesso');
-        await carregarPoemas();
+        console.log('Poesia deletada com sucesso');
+        await carregarPoesias();
       } else {
         const errorText = await response.text();
         console.error('Erro na resposta:', errorText);
         
         if (errorText.includes('permissão')) {
-          alert('Você não tem permissão para excluir este poema.');
+          alert('Você não tem permissão para excluir esta poesia.');
         } else if (errorText.includes('não encontrado')) {
-          alert('Poema não encontrado.');
+          alert('Poesia não encontrada.');
         } else {
-          alert(`Erro ao excluir poema: ${errorText}`);
+          alert(`Erro ao excluir poesia: ${errorText}`);
         }
       }
     } catch (error) {
-      console.error('Erro ao deletar poema:', error);
-      alert('Erro de conexão ao excluir poema. Verifique se o servidor está rodando.');
+      console.error('Erro ao deletar poesia:', error);
+      alert('Erro de conexão ao excluir poesia. Verifique se o servidor está rodando.');
     }
   };
 
@@ -162,9 +162,9 @@ function PerfilUsuario() {
 
   const handleSortChange = (order) => {
     setSortOrder(order);
-    if (activeTab === 'poemas') {
-      const poemasOrdenados = ordenarPoemas(poemas, order);
-      setPoemas(poemasOrdenados);
+    if (activeTab === 'poesias') {
+      const poesiasOrdenadas = ordenarPoesias(poesias, order);
+      setPoesias(poesiasOrdenadas);
     }
   };
 
@@ -206,10 +206,10 @@ function PerfilUsuario() {
               Minhas Categorias
             </button>
             <button 
-              className={`tab ${activeTab === 'poemas' ? 'active' : ''}`}
-              onClick={() => handleTabChange('poemas')}
+              className={`tab ${activeTab === 'poesias' ? 'active' : ''}`}
+              onClick={() => handleTabChange('poesias')}
             >
-              Meus Poemas
+              Minhas Poesias
             </button>
           </div>
 
@@ -239,10 +239,10 @@ function PerfilUsuario() {
               </div>
             )}
 
-            {activeTab === 'poemas' && (
-              <div className="poemas-section">
-                <div className="poemas-header">
-                  <h2>Meus Poemas</h2>
+            {activeTab === 'poesias' && (
+              <div className="poesias-section">
+                <div className="poesias-header">
+                  <h2>Minhas Poesias</h2>
                   <div className="sort-controls">
                     <span>Ordenar por:</span>
                     <button 
@@ -261,23 +261,23 @@ function PerfilUsuario() {
                 </div>
 
                 {loading ? (
-                  <p>Carregando poemas...</p>
-                ) : poemas.length === 0 ? (
-                  <p>Você ainda não criou nenhum poema.</p>
+                  <p>Carregando poesias...</p>
+                ) : poesias.length === 0 ? (
+                  <p>Você ainda não criou nenhuma poesia.</p>
                 ) : (
-                  <div className="poemas-list">
-                    {poemas.map((poema) => (
-                      <div key={poema.id} className="poema-item">
-                        <div className="poema-info">
-                          <h3 className="poema-titulo">{poema.titulo}</h3>
-                          <p className="poema-conteudo">{poema.conteudo}</p>
-                          <span className="poema-data">
-                            {new Date(poema.data).toLocaleDateString('pt-BR')}
+                  <div className="poesias-list">
+                    {poesias.map((poesia) => (
+                      <div key={poesia.id} className="poesia-item">
+                        <div className="poesia-info">
+                          <h3 className="poesia-titulo">{poesia.titulo}</h3>
+                          <p className="poesia-conteudo">{poesia.conteudo}</p>
+                          <span className="poesia-data">
+                            {new Date(poesia.data).toLocaleDateString('pt-BR')}
                           </span>
                         </div>
                         <button 
                           className="delete-btn"
-                          onClick={() => deletarPoema(poema.id)}
+                          onClick={() => deletarPoesia(poesia.id)}
                         >
                           <IoTrashOutline size={16} />
                         </button>
