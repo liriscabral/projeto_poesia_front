@@ -50,11 +50,22 @@ function PerfilUsuario() {
   const carregarPoesias = async () => {
     try {
       const response = await fetch(`http://localhost:8080/poema/autor/${usuario.id}`);
+      
+      if (response.status === 204) {
+        setPoesias([]);
+        return;
+      }
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       const poesiasOrdenadas = ordenarPoesias(data, sortOrder);
       setPoesias(poesiasOrdenadas);
     } catch (error) {
       console.error('Erro ao carregar poesias:', error);
+      setPoesias([]);
     }
   };
 
@@ -124,7 +135,8 @@ function PerfilUsuario() {
 
       if (response.ok) {
         console.log('Poesia deletada com sucesso');
-        await carregarPoesias();
+        setPoesias(prevPoesias => prevPoesias.filter(poesia => poesia.id !== poesiaId));
+        setTimeout(() => carregarPoesias(), 100);
       } else {
         const errorText = await response.text();
         console.error('Erro na resposta:', errorText);
