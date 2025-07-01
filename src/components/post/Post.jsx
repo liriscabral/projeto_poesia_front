@@ -16,10 +16,21 @@ function Post({ autor, conteudo, titulo = '', categoria = '' }) {
 
   return (
     <div className="post">
-      <strong>{autor}</strong>
-      {titulo && <h4>{titulo}</h4>}
-      <p>{conteudo}</p>
-      {categoria && <span className="post-category">{categoria}</span>}
+      <strong>{typeof autor === 'object' && autor !== null ? autor.user : autor}</strong>
+      <div style={{ marginBottom: '6px' }}>
+        {titulo && categoria ? (
+          <h4 style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>
+            {titulo} - {typeof categoria === 'object' && categoria !== null ? categoria.nome : categoria}
+          </h4>
+        ) : titulo ? (
+          <h4 style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>{titulo}</h4>
+        ) : categoria ? (
+          <h4 style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>
+            {typeof categoria === 'object' && categoria !== null ? categoria.nome : categoria}
+          </h4>
+        ) : null}
+      </div>
+      <p style={{ whiteSpace: 'pre-wrap' }}>{conteudo}</p>
       <div className="post-actions">
         <button onClick={() => setLiked(!liked)}>
           {liked ? <FaHeart color="#ff0000" /> : <FaRegHeart />}

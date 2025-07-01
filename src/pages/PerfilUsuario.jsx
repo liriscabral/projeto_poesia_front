@@ -49,7 +49,7 @@ function PerfilUsuario() {
 
   const carregarPoesias = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/poesia/autor/${usuario.id}`);
+      const response = await fetch(`http://localhost:8080/poema/autor/${usuario.id}`);
       const data = await response.json();
       const poesiasOrdenadas = ordenarPoesias(data, sortOrder);
       setPoesias(poesiasOrdenadas);
@@ -116,7 +116,7 @@ function PerfilUsuario() {
     try {
       console.log('Tentando deletar poesia:', poesiaId, 'do usuário:', usuario.id);
       
-      const response = await fetch(`http://localhost:8080/poesia/${poesiaId}/${usuario.id}`, {
+      const response = await fetch(`http://localhost:8080/poema/${poesiaId}/${usuario.id}`, {
         method: 'DELETE'
       });
 
@@ -269,8 +269,22 @@ function PerfilUsuario() {
                     {poesias.map((poesia) => (
                       <div key={poesia.id} className="poesia-item">
                         <div className="poesia-info">
-                          <h3 className="poesia-titulo">{poesia.titulo}</h3>
-                          <p className="poesia-conteudo">{poesia.conteudo}</p>
+                          <div style={{ marginBottom: '6px' }}>
+                            {poesia.titulo && poesia.categoria ? (
+                              <h3 className="poesia-titulo" style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>
+                                {poesia.titulo} - {typeof poesia.categoria === 'object' && poesia.categoria !== null ? poesia.categoria.nome : poesia.categoria}
+                              </h3>
+                            ) : poesia.titulo ? (
+                              <h3 className="poesia-titulo" style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>
+                                {poesia.titulo}
+                              </h3>
+                            ) : poesia.categoria ? (
+                              <h3 className="poesia-titulo" style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>
+                                {typeof poesia.categoria === 'object' && poesia.categoria !== null ? poesia.categoria.nome : poesia.categoria}
+                              </h3>
+                            ) : null}
+                          </div>
+                          <p className="poesia-conteudo" style={{ whiteSpace: 'pre-wrap' }}>{poesia.conteudo}</p>
                           <span className="poesia-data">
                             {new Date(poesia.data).toLocaleDateString('pt-BR')}
                           </span>

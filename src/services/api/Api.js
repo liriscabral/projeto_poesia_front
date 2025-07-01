@@ -40,4 +40,23 @@ export const categoriaService = {
   }
 };
 
+export const poemaService = {
+  cadastrarPoema: async (poemaDTO) => {
+    try {
+      const response = await Api.post('/poema', poemaDTO);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Erro ao cadastrar poesia');
+    }
+  },
+  listarPoesias: async () => {
+    try {
+      const response = await Api.get('/poema');
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Erro ao buscar poesias');
+    }
+  }
+};
+
 export default Api;

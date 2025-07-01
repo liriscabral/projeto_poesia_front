@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './Postform.css';
-import Alert from '../alerta/Alerta';
 import { categoriaService } from '../../services/api/Api';
+import { poemaService } from '../../services/api/Api';
 
-function PostForm({ onPublish, usuarioId }) {
+function PostForm({ usuarioId, onPublish }) {
   const [texto, setTexto] = useState('');
   const [titulo, setTitulo] = useState('');
   const [categoria, setCategoria] = useState('');
   const [novaCategoria, setNovaCategoria] = useState('');
   const [categorias, setCategorias] = useState([]);
-  const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isAddingCategory, setIsAddingCategory] = useState(false);
 
@@ -18,63 +17,48 @@ function PostForm({ onPublish, usuarioId }) {
       setLoading(true);
       try {
         const response = await categoriaService.listarCategorias();
-        setCategorias(response.map(cat => cat.nome));
+        setCategorias(response);
       } catch (error) {
         console.error('Erro ao carregar categorias:', error);
-        setAlert({
-          message: 'Erro ao carregar categorias. Tente recarregar a página.',
-          type: 'error'
-        });
+        alert('Erro ao carregar categorias. Tente recarregar a página.');
       } finally {
         setLoading(false);
       }
     };
-    
     carregarCategorias();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!titulo.trim()) {
-      setAlert({
-        message: 'Por favor, insira um título para sua poesia',
-        type: 'error'
-      });
+      alert('Por favor, insira um título para sua poesia');
       return;
     }
-    
-    if (!categoria.trim()) {
-      setAlert({
-        message: 'Por favor, selecione ou crie uma categoria',
-        type: 'error'
-      });
+    if (!categoria) {
+      alert('Por favor, selecione ou crie uma categoria');
       return;
     }
-    
     if (!texto.trim()) {
-      setAlert({
-        message: 'Por favor, escreva sua poesia antes de publicar',
-        type: 'error'
-      });
+      alert('Por favor, escreva sua poesia antes de publicar');
       return;
     }
-
     try {
       setLoading(true);
-      await onPublish({ titulo, texto, categoria });
+      await poemaService.cadastrarPoema({
+        titulo,
+        conteudo: texto,
+        autor: usuarioId,
+        categoria: categoria
+      });
       setTexto('');
       setTitulo('');
       setCategoria('');
-      setAlert({
-        message: 'Poesia publicada com sucesso!',
-        type: 'success'
-      });
+      alert('Poesia publicada com sucesso!');
+      if (onPublish) {
+        onPublish();
+      }
     } catch (error) {
-      setAlert({
-        message: 'Erro ao publicar poesia. Tente novamente.',
-        type: 'error'
-      });
+      alert(error.message || 'Erro ao publicar poesia. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -82,54 +66,26 @@ function PostForm({ onPublish, usuarioId }) {
 
   const handleAddCategoria = async (e) => {
     e.preventDefault();
-    
     if (!novaCategoria.trim()) {
-      setAlert({
-        message: 'Por favor, insira um nome para a nova categoria',
-        type: 'error'
-      });
+      alert('Por favor, insira um nome para a nova categoria');
       return;
     }
-
-    if (categorias.some(cat => cat.toLowerCase() === novaCategoria.toLowerCase())) {
-      setAlert({
-        message: 'Esta categoria já existe',
-        type: 'error'
-      });
+    if (categorias.some(cat => cat.nome.toLowerCase() === novaCategoria.toLowerCase())) {
+      alert('Esta categoria já existe');
       return;
     }
-
     try {
       setIsAddingCategory(true);
-      await categoriaService.salvarCategoria({ 
-        nome: novaCategoria, 
-        usuarioId: usuarioId
-      });
-      
-      // Atualiza a lista de categorias sem precisar recarregar tudo
-      setCategorias([...categorias, novaCategoria]);
-      setCategoria(novaCategoria);
+      const nova = await categoriaService.salvarCategoria({ nome: novaCategoria, usuarioId });
+      setCategorias([...categorias, nova]);
+      setCategoria(nova.id);
       setNovaCategoria('');
-      setAlert({
-        message: 'Nova categoria adicionada!',
-        type: 'success'
-      });
+      alert('Nova categoria adicionada!');
     } catch (error) {
-      console.error('Erro ao adicionar categoria:', error);
-      const errorMessage = error.response?.data?.message || 
-                         error.message || 
-                         'Erro ao adicionar nova categoria';
-      setAlert({
-        message: errorMessage,
-        type: 'error'
-      });
+      alert(error.message || 'Erro ao adicionar nova categoria');
     } finally {
       setIsAddingCategory(false);
     }
-  };
-
-  const closeAlert = () => {
-    setAlert(null);
   };
 
   return (
@@ -137,13 +93,6 @@ function PostForm({ onPublish, usuarioId }) {
       <h3 style={{ color: '#1da1f2', marginBottom: '12px', fontWeight: 700, fontSize: '1.1rem' }}>
         Nova Poesia
       </h3>
-      {alert && (
-        <Alert 
-          message={alert.message} 
-          type={alert.type} 
-          onClose={closeAlert}
-        />
-      )}
       <form className="post-form" onSubmit={handleSubmit}>
         <div className="form-row">
           <input
@@ -163,10 +112,8 @@ function PostForm({ onPublish, usuarioId }) {
             required
           >
             <option value="">Selecione uma categoria *</option>
-            {categorias.map((cat, index) => (
-              <option key={index} value={cat}>
-                {cat}
-              </option>
+            {categorias.map((cat) => (
+              <option key={cat.id} value={cat.id}>{cat.nome}</option>
             ))}
           </select>
           <div className="new-category-container">

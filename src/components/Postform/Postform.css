@@ -65,7 +65,7 @@
 
 .post-form textarea:focus {
   outline: none;
-  background-color: #fff;
+  background-color: #15181c;
   box-shadow: 0 0 0 2px #1da1f2;
 }
 

@@ -4,17 +4,14 @@ import './Layout.css';
 import Sidebar from '../sidebar/Sidebar';
 import Feed from '../feed/Feed';
 import PostForm from '../Postform/Postform';
+import { poemaService } from '../../services/api/Api';
 
 function Layout() {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { usuario } = useAuth();
-
-  const [poesias, setPoesias] = useState([
-    { autor: 'William Sanhá', conteudo: 'A poesia é a alma que se derrama no papel.' },
-    { autor: 'Delza', conteudo: 'Entre versos e rimas, construo meus sonhos.' },
-    { autor: 'William Sanhá', conteudo: 'A poesia é a alma que se derrama no papel.' }
-  ]);
+  const [poesias, setPoesias] = useState([]);
+  const [sortOrder, setSortOrder] = useState('recentes');
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,19 +26,44 @@ function Layout() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    const fetchPoesias = async () => {
+      try {
+        const response = await poemaService.listarPoesias();
+        const poesiasOrdenadas = ordenarPoesias(response, sortOrder);
+        setPoesias(poesiasOrdenadas);
+      } catch (error) {
+        setPoesias([]);
+      }
+    };
+    fetchPoesias();
+  }, [sortOrder]);
+
+  const ordenarPoesias = (poesias, ordem) => {
+    return [...poesias].sort((a, b) => {
+      const dataA = new Date(a.data);
+      const dataB = new Date(b.data);
+      return ordem === 'recentes' ? dataB - dataA : dataA - dataB;
+    });
+  };
+
+  const handleSortChange = (order) => {
+    setSortOrder(order);
+  };
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const adicionarPoesia = (dados) => {
-  const nova = { 
-    autor: 'Você', 
-    conteudo: dados.texto,
-    titulo: dados.titulo,
-    categoria: dados.categoria
+  const adicionarPoesia = async () => {
+    try {
+      const response = await poemaService.listarPoesias();
+      const poesiasOrdenadas = ordenarPoesias(response, sortOrder);
+      setPoesias(poesiasOrdenadas);
+    } catch (error) {
+      console.error('Erro ao recarregar poesias:', error);
+    }
   };
-  setPoesias([nova, ...poesias]);
-};
 
   return (
     <div className="layout">
@@ -49,6 +71,23 @@ function Layout() {
       <div className="layout-main-card">
         <div className="post-form-container">
           <PostForm onPublish={adicionarPoesia} usuarioId={usuario.id} />
+        </div>
+        <div className="feed-header">
+          <div className="sort-controls">
+            <span>Ordenar por:</span>
+            <button 
+              className={`sort-btn ${sortOrder === 'recentes' ? 'active' : ''}`}
+              onClick={() => handleSortChange('recentes')}
+            >
+              Mais Recentes
+            </button>
+            <button 
+              className={`sort-btn ${sortOrder === 'antigos' ? 'active' : ''}`}
+              onClick={() => handleSortChange('antigos')}
+            >
+              Mais Antigos
+            </button>
+          </div>
         </div>
         <Feed poesias={poesias} />
       </div>

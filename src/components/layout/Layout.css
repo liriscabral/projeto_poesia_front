@@ -130,3 +130,46 @@
   box-shadow: none;
   color: #fff;
 }
+
+.feed-header {
+  margin-bottom: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid #333;
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+}
+
+.sort-controls span {
+  font-size: 0.9rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.sort-btn {
+  background: transparent;
+  border: 1px solid #333;
+  color: #888;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.sort-btn:hover {
+  background: rgba(29, 161, 242, 0.1);
+  border-color: #1da1f2;
+  color: #1da1f2;
+}
+
+.sort-btn.active {
+  background: #1da1f2;
+  border-color: #1da1f2;
+  color: #fff;
+}
