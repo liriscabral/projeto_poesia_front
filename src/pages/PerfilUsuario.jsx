@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoLogOutOutline, IoTrashOutline, IoArrowBackOutline } from 'react-icons/io5';
+import { IoLogOutOutline, IoTrashOutline, IoArrowBackOutline, IoCreateOutline } from 'react-icons/io5';
 import { useAuth } from '../contexts/AuthContext';
 import './PerfilUsuario.css';
 
@@ -152,6 +152,10 @@ function PerfilUsuario() {
     navigate('/home');
   };
 
+  const handleEditar = () => {
+    navigate('/editar-perfil');
+  };
+
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
@@ -181,6 +185,10 @@ function PerfilUsuario() {
             <button className="back-btn" onClick={handleVoltar}>
               <IoArrowBackOutline size={16} />
               Voltar
+            </button>
+            <button className="edit-btn" onClick={handleEditar}>
+              <IoCreateOutline size={16} />
+              Editar
             </button>
             <button className="logout-btn" onClick={handleLogout}>
               <IoLogOutOutline size={16} />

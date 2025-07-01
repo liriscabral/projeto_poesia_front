@@ -58,42 +58,44 @@ body, .perfil-container {
   letter-spacing: 0.5px;
 }
 
-.back-btn {
-  background-color: #1da1f2;
-  color: #fff;
-  border: none;
-  border-radius: 25px;
-  padding: 8px 16px;
-  font-size: 0.875rem;
-  font-weight: 600;
+.perfil-container .back-btn {
+  background: #1da1f2 !important;
+  color: white !important;
+  border: none !important;
+  padding: 10px 16px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  transition: all 0.3s ease;
 }
 
-.back-btn:hover {
-  background-color: #1a91da;
+.perfil-container .back-btn:hover {
+  background: #1a91da !important;
+  transform: translateY(-2px);
 }
 
 .logout-btn {
-  background-color: #e0245e;
-  color: #fff;
+  background: #dc3545;
+  color: white;
   border: none;
-  border-radius: 25px;
-  padding: 8px 16px;
-  font-size: 0.875rem;
-  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  transition: all 0.3s ease;
 }
 
 .logout-btn:hover {
-  background-color: #c01e4e;
+  background: #c82333;
+  transform: translateY(-2px);
 }
 
 .tabs-container {
@@ -246,6 +248,29 @@ body, .perfil-container {
 .delete-btn:hover {
   background-color: rgba(224, 36, 94, 0.1);
 }
+
+/* Estilos para os novos botões */
+.edit-btn {
+  background: #1da1f2;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+  background: #1a91da;
+  transform: translateY(-2px);
+}
+
+
 
 @media (max-width: 480px) {
   .perfil-container {

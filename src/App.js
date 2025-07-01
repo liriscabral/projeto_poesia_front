@@ -6,6 +6,7 @@ import Layout from './components/layout/Layout.jsx';
 import CadastroUsuario from './pages/cadastroUsuario';
 import LoginUsuario from './pages/loginUsuario';
 import PerfilUsuario from './pages/PerfilUsuario';
+import EditarPerfil from './pages/EditarPerfil';
 
 function App() {
   return (
@@ -23,6 +24,11 @@ function App() {
             <Route path="/perfil" element={
               <ProtectedRoute>
                 <PerfilUsuario />
+              </ProtectedRoute>
+            } />
+            <Route path="/editar-perfil" element={
+              <ProtectedRoute>
+                <EditarPerfil />
               </ProtectedRoute>
             } />
           </Routes>
