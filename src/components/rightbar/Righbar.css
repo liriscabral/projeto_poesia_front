@@ -1,37 +1,84 @@
-
-.rightbar {
-  background-color: white;
-  border-radius: 8px;
+/* Estilos Gerais - Espelhando o Sidebar */
+.righbar {
+  width: 300px;
+  height: 100vh;
+  position: fixed;
+  right: 0;
+  top: 0;
+  background-color: #f8f9fa;
+  border-left: 1px solid #e0e0e0;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  width: 100%; /* Ocupa toda a largura disponível */
+  transition: transform 0.3s ease;
+  z-index: 100;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
 }
 
-.rightbar h3 {
-  color: #333;
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+.righbar-header {
+  padding: 10px;
+  margin-bottom: 30px;
 }
 
-.rightbar ul {
+.righbar h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+  padding-left: 10px;
+  border-bottom: none;
+}
+
+.righbar-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.righbar ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-.rightbar li {
-  margin: 12px 0;
+/* Itens de Sugestão - Estilo similar ao Sidebar */
+.righbar li {
+  padding: 12px 15px;
+  margin: 4px 0;
+  border-radius: 8px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  transition: all 0.2s;
+  color: #333;
+}
+
+.righbar li:hover {
+  background-color: #e8f4fc;
+  text-decoration: none;
+}
+
+.righbar li::before {
+  content: "@";
   color: #1da1f2;
+  font-weight: bold;
 }
 
-.rightbar li:hover {
-  text-decoration: underline;
-}
-
+/* Responsividade */
 @media (max-width: 768px) {
-  .rightbar {
-    padding: 15px;
+  .righbar {
+    transform: translateX(100%);
+    padding: 20px;
+  }
+  
+  .righbar.mobile-open {
+    transform: translateX(0);
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .righbar-header {
+    margin-bottom: 20px;
   }
 }

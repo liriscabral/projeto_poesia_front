@@ -38,3 +38,12 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+ /*Adicionando variações */
+.feed-container.autor {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.feed-container.autor .post {
+  margin: 10px;
+} 

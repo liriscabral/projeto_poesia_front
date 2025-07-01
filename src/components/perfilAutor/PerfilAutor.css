@@ -1,0 +1,115 @@
+/* Estilos base */
+.perfil-autor {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  max-width: 400px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Cabeçalho */
+.perfil-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.avatar-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #f0f2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-icon {
+  font-size: 2rem;
+  color: #657786;
+}
+
+.info-basica h2 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 1.5rem;
+}
+
+.username {
+  margin: 4px 0 0;
+  color: #657786;
+  font-size: 0.9rem;
+}
+
+/* Corpo do perfil */
+.bio-container {
+  margin-bottom: 20px;
+}
+
+.bio-text {
+  color: #1a1a1a;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.detalhes-contato {
+  margin-bottom: 24px;
+}
+
+.detalhe-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #657786;
+  font-size: 0.9rem;
+}
+
+.detalhe-icon {
+  color: #1da1f2;
+}
+
+/* Estatísticas */
+.estatisticas {
+  display: flex;
+  gap: 30px;
+}
+
+.estatistica-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.estatistica-icon {
+  font-size: 1.2rem;
+  color: #1da1f2;
+}
+
+.estatistica-valor {
+  font-weight: bold;
+  color: #1a1a1a;
+  font-size: 1.1rem;
+}
+
+.estatistica-label {
+  display: block;
+  color: #657786;
+  font-size: 0.8rem;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .perfil-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .estatisticas {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

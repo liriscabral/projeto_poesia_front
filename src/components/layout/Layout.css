@@ -7,8 +7,8 @@
 
 .content {
   flex: 1;
-  margin-left: 250px; /* Largura do sidebar */
-  margin-right: 20%; /* Espaço para o rightbar */
+  margin-left: 200px;
+  margin-right: 250px;
   transition: all 0.3s ease;
   padding: 0;
 }
@@ -22,35 +22,39 @@
   gap: 20px;
 }
 
-/* Layout.css - Adicione isso */
 .feed-container {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  min-height: calc(100vh - 40px); /* Mudado de height para min-height */
+  min-height: calc(100vh - 40px);
+  min-width: 0;
 }
 
-.post-form-container {
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.rightbar {
-  width: 20%;
+.rightbar-container {
+  width: 250px;
   position: fixed;
   right: 0;
   top: 0;
   height: 100vh;
-  background-color: #fff;
-  border-left: 1px solid #e0e0e0;
   padding: 20px;
   overflow-y: auto;
 }
 
-/* Mobile menu button */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: #fff;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px;
+  transition: transform 0.3s ease;
+  z-index: 100;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+}
+
 .mobile-menu-button {
   display: none;
   position: fixed;
@@ -66,19 +70,22 @@
   cursor: pointer;
 }
 
-/* Responsive adjustments */
 @media (max-width: 1200px) {
-  .rightbar {
-    width: 250px;
+  .rightbar-container {
+    width: 220px;
   }
   .content {
-    margin-right: 250px;
+    margin-right: 220px;
   }
 }
 
 @media (max-width: 992px) {
+  .sidebar, .rightbar-container {
+    width: 200px;
+  }
   .content {
-    margin-left: 220px;
+    margin-left: 200px;
+    margin-right: 200px;
   }
 }
 
@@ -88,12 +95,20 @@
     margin-right: 0;
   }
   
-  .rightbar {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  
+  .rightbar-container {
     position: static;
     width: 100%;
     height: auto;
-    border-left: none;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 15px;
+    margin-top: 20px;
   }
   
   .main-content {
@@ -108,14 +123,5 @@
 @media (max-width: 576px) {
   .main-content {
     padding: 10px;
-  }
-  
-  .post-form-container,
-  .feed,
-  .rightbar {
-    border-radius: 0;
-    box-shadow: none;
-    border-left: none;
-    border-right: none;
   }
 }
