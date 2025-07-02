@@ -1,4 +1,4 @@
-/* Post.css */
+
 .post {
   background-color: #15181c;
   padding: 20px;
@@ -65,7 +65,6 @@
   text-decoration: underline;
 }
 
-/* Feed.css - Adicionar */
 .posts-container {
   display: flex;
   flex-direction: column;
@@ -73,8 +72,8 @@
 }
 
 .post {
-  width: 100%; /* Posts ocupam toda a largura */
-  box-sizing: border-box; /* Inclui padding na largura */
+  width: 100%; 
+  box-sizing: border-box; 
 }
 
 .post h4 {
@@ -90,4 +89,87 @@
   border-radius: 12px;
   font-size: 0.8rem;
   margin-top: 5px;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.post-titulo {
+  margin: 0 0 10px 0;
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
+}
+
+.post-categoria {
+  background-color: rgba(29, 161, 242, 0.1); 
+  color: #1da1f2; 
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+}
+
+
+.post h4 {
+  margin: 5px 0;
+  font-size: 1.1rem;
+  
+}
+
+.post-conteudo {
+  white-space: pre-wrap;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.post-actions button.saved {
+  color: #1da1f2;
+}
+
+.post-actions button.saved:hover {
+  background-color: rgba(29, 161, 242, 0.1);
+}
+
+.post-actions button.saved {
+  color: #1da1f2;
+}
+
+.post-actions button.saved:hover {
+  background-color: rgba(29, 161, 242, 0.1);
+}
+
+.post-actions button.trash {
+  color: #e0245e;
+}
+
+.post-actions button.trash:hover {
+  background-color: rgba(224, 36, 94, 0.1);
+}
+
+.post-actions button.saved {
+  color: #1da1f2;
+}
+
+.post-actions button.saved:hover {
+  background-color: rgba(29, 161, 242, 0.1);
+}
+
+.post-actions button.trash {
+  color: #e0245e;
+}
+
+.post-actions button.trash:hover {
+  background-color: rgba(224, 36, 94, 0.1);
 }

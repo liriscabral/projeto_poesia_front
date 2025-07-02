@@ -1,53 +1,87 @@
+
 import React from 'react';
 import './Post.css';
-
+import { useSavedPosts } from '../../contexts/SavedPostsContext';
 import { 
   FaRegHeart,
   FaHeart,
   FaRegComment,
   FaRegBookmark,
-  FaBookmark
+  FaBookmark,
+  FaTrash
 } from 'react-icons/fa';
-import { FiShare } from 'react-icons/fi';
 
-function Post({ autor, conteudo, titulo = '', categoria = '' }) {
+function Post({ id, autor, conteudo, titulo = '', categoria = '', isSavedView = false }) {
   const [liked, setLiked] = React.useState(false);
-  const [saved, setSaved] = React.useState(false);
+  const { savedPosts, savePost, removeSavedPost } = useSavedPosts();
+  
+  const isSaved = savedPosts.some(post => post.id === id);
+
+  const categoriaNome = typeof categoria === 'object' && categoria !== null ? categoria.nome : categoria;
+
+  const handleSave = () => {
+    if (isSaved) {
+      removeSavedPost(id);
+    } else {
+      savePost({
+        id,
+        autor,
+        conteudo,
+        titulo,
+        categoria
+      });
+    }
+  };
 
   return (
     <div className="post">
-      <strong>{typeof autor === 'object' && autor !== null ? autor.user : autor}</strong>
-      <div style={{ marginBottom: '6px' }}>
-        {titulo && categoria ? (
-          <h4 style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>
-            {titulo} - {typeof categoria === 'object' && categoria !== null ? categoria.nome : categoria}
-          </h4>
-        ) : titulo ? (
-          <h4 style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>{titulo}</h4>
-        ) : categoria ? (
-          <h4 style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>
-            {typeof categoria === 'object' && categoria !== null ? categoria.nome : categoria}
-          </h4>
-        ) : null}
+      <div className="post-header">
+        <strong>{typeof autor === 'object' && autor !== null ? autor.user : autor}</strong>
+        {categoriaNome && (
+          <span className="post-categoria">
+            {categoriaNome}
+          </span>
+        )}
       </div>
-      <p style={{ whiteSpace: 'pre-wrap' }}>{conteudo}</p>
+      
+      {titulo && (
+        <h4 className="post-titulo">{titulo}</h4> 
+      )}
+      
+      <p className="post-conteudo">{conteudo}</p>
+      
       <div className="post-actions">
-        <button onClick={() => setLiked(!liked)}>
-          {liked ? <FaHeart color="#ff0000" /> : <FaRegHeart />}
-          <span>Curtir</span>
-        </button>
-        <button>
-          <FaRegComment />
-          <span>Comentar</span>
-        </button>
-        <button onClick={() => setSaved(!saved)}>
-          {saved ? <FaBookmark color="#000" /> : <FaRegBookmark />}
-          <span>Salvar</span>
+        {!isSavedView && (
+          <>
+            <button onClick={() => setLiked(!liked)}>
+              {liked ? <FaHeart color="#ff0000" /> : <FaRegHeart />}
+              <span>Curtir</span>
+            </button>
+            <button>
+              <FaRegComment />
+              <span>Comentar</span>
+            </button>
+          </>
+        )}
+        
+        <button 
+          onClick={handleSave}
+          className={isSaved ? 'saved' : ''}
+        >
+          {isSavedView ? (
+            <FaTrash color="#e0245e" />
+          ) : isSaved ? (
+            <FaBookmark color="#1da1f2" />
+          ) : (
+            <FaRegBookmark />
+          )}
+          <span>
+            {isSavedView ? 'Remover' : isSaved ? 'Salvo' : 'Salvar'}
+          </span>
         </button>
       </div>
     </div>
   );
 }
-
 
 export default Post;
