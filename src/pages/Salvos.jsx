@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useSavedPosts } from '../contexts/SavedPostsContext';
 import { useNavigate } from 'react-router-dom';
@@ -36,3 +35,4 @@ function Salvos() {
 }
 
 export default Salvos;
+

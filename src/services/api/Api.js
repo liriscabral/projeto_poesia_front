@@ -59,4 +59,47 @@ export const poemaService = {
   }
 };
 
+export const curtidaService = {
+  curtirPoema: async (poemaId, usuarioId) => {
+    try {
+      const response = await Api.post('/curtidas', {
+        usuarioId,
+        poemaId
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Erro ao curtir poema');
+    }
+  },
+
+  descurtirPoema: async (poemaId, usuarioId) => {
+    try {
+      const response = await Api.delete('/curtidas', {
+        data: { usuarioId, poemaId }
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Erro ao descurtir poema');
+    }
+  },
+
+  getContagemCurtidas: async (poemaId) => {
+    try {
+      const response = await Api.get(`/curtidas/contar/${poemaId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Erro ao buscar contagem de curtidas');
+    }
+  },
+
+  getStatusCurtida: async (usuarioId, poemaId) => {
+    try {
+      const response = await Api.get(`/curtidas/status/${usuarioId}/${poemaId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Erro ao verificar status da curtida');
+    }
+  }
+};
+
 export default Api;

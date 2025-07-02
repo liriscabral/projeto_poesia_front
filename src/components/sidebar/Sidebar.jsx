@@ -7,8 +7,6 @@ import './Sidebar.css';
 import { 
   IoHomeOutline, 
   IoHomeSharp,
-  IoSearchOutline,
-  IoSearchSharp,
   IoHeartOutline,
   IoHeartSharp,
   IoBookmarkOutline,
