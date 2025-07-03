@@ -87,6 +87,12 @@ function PerfilUsuario() {
   };
 
   const ordenarPoesias = (poesias, ordem) => {
+    if (ordem === 'maisCurtidas') {
+      return [...poesias].sort((a, b) => (curtidas[b.id] || 0) - (curtidas[a.id] || 0));
+    }
+    if (ordem === 'menosCurtidas') {
+      return [...poesias].sort((a, b) => (curtidas[a.id] || 0) - (curtidas[b.id] || 0));
+    }
     return [...poesias].sort((a, b) => {
       const dataA = new Date(a.data);
       const dataB = new Date(b.data);
@@ -285,6 +291,18 @@ function PerfilUsuario() {
                       onClick={() => handleSortChange('antigos')}
                     >
                       Mais Antigos
+                    </button>
+                    <button
+                      className={`sort-btn ${sortOrder === 'maisCurtidas' ? 'active' : ''}`}
+                      onClick={() => handleSortChange('maisCurtidas')}
+                    >
+                      Mais Curtidas
+                    </button>
+                    <button
+                      className={`sort-btn ${sortOrder === 'menosCurtidas' ? 'active' : ''}`}
+                      onClick={() => handleSortChange('menosCurtidas')}
+                    >
+                      Menos Curtidas
                     </button>
                   </div>
                 </div>
