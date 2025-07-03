@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoLogOutOutline, IoTrashOutline, IoArrowBackOutline, IoCreateOutline } from 'react-icons/io5';
+import { IoLogOutOutline, IoTrashOutline, IoArrowBackOutline, IoCreateOutline, IoHeartOutline } from 'react-icons/io5';
 import { useAuth } from '../contexts/AuthContext';
 import './PerfilUsuario.css';
+import { curtidaService } from '../services/api/Api';
 
 function PerfilUsuario() {
   const [activeTab, setActiveTab] = useState('categorias');
@@ -10,6 +11,7 @@ function PerfilUsuario() {
   const [poesias, setPoesias] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState('recentes');
+  const [curtidas, setCurtidas] = useState({});
   const navigate = useNavigate();
   const { usuario, logout } = useAuth();
 
@@ -19,7 +21,7 @@ function PerfilUsuario() {
 
   const carregarDados = async () => {
     if (!usuario) return;
-    
+
     setLoading(true);
     try {
       if (activeTab === 'categorias') {
@@ -50,22 +52,37 @@ function PerfilUsuario() {
   const carregarPoesias = async () => {
     try {
       const response = await fetch(`http://localhost:8080/poema/autor/${usuario.id}`);
-      
+
       if (response.status === 204) {
         setPoesias([]);
+        setCurtidas({});
         return;
       }
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       const poesiasOrdenadas = ordenarPoesias(data, sortOrder);
       setPoesias(poesiasOrdenadas);
+
+      const curtidasObj = {};
+      await Promise.all(
+        poesiasOrdenadas.map(async (poesia) => {
+          try {
+            const qtd = await curtidaService.getContagemCurtidas(poesia.id);
+            curtidasObj[poesia.id] = qtd;
+          } catch {
+            curtidasObj[poesia.id] = 0;
+          }
+        })
+      );
+      setCurtidas(curtidasObj);
     } catch (error) {
       console.error('Erro ao carregar poesias:', error);
       setPoesias([]);
+      setCurtidas({});
     }
   };
 
@@ -89,7 +106,7 @@ function PerfilUsuario() {
 
     try {
       console.log('Tentando deletar categoria:', categoriaId, 'do usuário:', usuario.id);
-      
+
       const response = await fetch(`http://localhost:8080/categoria/${categoriaId}/${usuario.id}`, {
         method: 'DELETE'
       });
@@ -102,7 +119,7 @@ function PerfilUsuario() {
       } else {
         const errorText = await response.text();
         console.error('Erro na resposta:', errorText);
-        
+
         if (errorText.includes('poesias associadas')) {
           alert('Não é possível excluir esta categoria pois existem poesias associadas a ela. Delete as poesias primeiro.');
         } else if (errorText.includes('permissão')) {
@@ -126,11 +143,11 @@ function PerfilUsuario() {
 
     try {
       console.log('Tentando deletar poesia:', poesiaId, 'do usuário:', usuario.id);
-      
+
       const response = await fetch(`http://localhost:8080/poema/${poesiaId}/${usuario.id}`, {
         method: 'DELETE'
       });
-
+      
       console.log('Response status:', response.status);
 
       if (response.ok) {
@@ -140,7 +157,7 @@ function PerfilUsuario() {
       } else {
         const errorText = await response.text();
         console.error('Erro na resposta:', errorText);
-        
+
         if (errorText.includes('permissão')) {
           alert('Você não tem permissão para excluir esta poesia.');
         } else if (errorText.includes('não encontrado')) {
@@ -279,7 +296,11 @@ function PerfilUsuario() {
                 ) : (
                   <div className="poesias-list">
                     {poesias.map((poesia) => (
-                      <div key={poesia.id} className="poesia-item">
+                      <div key={poesia.id} className="poesia-item" style={{ position: 'relative' }}>
+                        <span style={{ position: 'absolute', top: 10, right: 10, display: 'flex', alignItems: 'center', color: '#ff4d6d', fontWeight: 600, fontSize: '1rem', zIndex: 2 }}>
+                          <IoHeartOutline style={{ marginRight: '4px' }} />
+                          {curtidas[poesia.id] || 0}
+                        </span>
                         <div className="poesia-info">
                           <div style={{ marginBottom: '6px' }}>
                             {poesia.titulo && poesia.categoria ? (
@@ -303,6 +324,7 @@ function PerfilUsuario() {
                         </div>
                         <button 
                           className="delete-btn"
+                          style={{ position: 'absolute', bottom: 10, right: 10, zIndex: 2 }}
                           onClick={() => deletarPoesia(poesia.id)}
                         >
                           <IoTrashOutline size={16} />
