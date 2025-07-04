@@ -7,10 +7,10 @@ function Feed({ poesias, isSavedView = false }) {
     <div className="feed">
       <div className="posts-container">
         {poesias.map((p, idx) => {
-          // Adiciona @ ao autor
+          const addArroba = (nome) => nome.startsWith('@') ? nome : `@${nome}`;
           const autorFormatado = typeof p.autor === 'object' && p.autor !== null
-            ? { ...p.autor, user: p.autor.user.startsWith('@') ? p.autor.user : `@${p.autor.user}` }
-            : (typeof p.autor === 'string' && p.autor.startsWith('@') ? p.autor : `@${p.autor}`);
+            ? { ...p.autor, user: addArroba(p.autor.user) }
+            : addArroba(p.autor);
           
           return (
             <Post 
