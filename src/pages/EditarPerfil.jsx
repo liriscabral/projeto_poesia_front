@@ -21,7 +21,7 @@ function EditarPerfil() {
   const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -129,30 +129,6 @@ function EditarPerfil() {
 
   const handleVoltar = () => {
     navigate('/perfil');
-  };
-
-  const handleExcluirConta = () => {
-    setShowDeleteModal(true);
-  };
-
-  const excluirConta = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/cadastro/${usuario.id}`, {
-        method: 'DELETE'
-      });
-
-      if (response.ok) {
-        alert('Conta excluída com sucesso.');
-        logout();
-        navigate('/');
-      } else {
-        const errorData = await response.json();
-        alert(`Erro ao excluir conta: ${errorData.message || 'Erro desconhecido'}`);
-      }
-    } catch (error) {
-      console.error('Erro ao excluir conta:', error);
-      alert('Erro de conexão ao excluir conta. Verifique se o servidor está rodando.');
-    }
   };
 
   return (
@@ -270,41 +246,8 @@ function EditarPerfil() {
             </button>
           </div>
 
-          <div className="danger-zone">
-            <h3>Exclusão de Conta</h3>
-            <button type="button" className="delete-account-btn" onClick={handleExcluirConta}>
-              <IoWarningOutline size={16} />
-              Excluir Conta
-            </button>
-          </div>
         </form>
       </div>
-
-      {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>Excluir Conta</h3>
-            <p>Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.</p>
-            <div className="modal-actions">
-              <button 
-                className="modal-btn cancel-btn" 
-                onClick={() => setShowDeleteModal(false)}
-              >
-                Cancelar
-              </button>
-              <button 
-                className="modal-btn confirm-btn" 
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  excluirConta();
-                }}
-              >
-                Excluir Conta
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
