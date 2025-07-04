@@ -119,4 +119,48 @@ export const comentarioService = {
   }
 };
 
+export const salvoService = {
+  salvarPoema: async (usuarioId, poemaId) => {
+    try {
+      const response = await Api.post('/salvos', null, {
+        params: { usuarioId, poemaId }
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Erro ao salvar poema');
+    }
+  },
+
+  removerPoemaSalvo: async (usuarioId, poemaId) => {
+    try {
+      await Api.delete('/salvos', {
+        params: { usuarioId, poemaId }
+      });
+      return true;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Erro ao remover poema salvo');
+    }
+  },
+
+  listarPoemasSalvos: async (usuarioId) => {
+    try {
+      const response = await Api.get(`/salvos/usuario/${usuarioId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Erro ao listar poemas salvos');
+    }
+  },
+
+  verificarPoemaSalvo: async (usuarioId, poemaId) => {
+    try {
+      const response = await Api.get('/salvos/verifica', {
+        params: { usuarioId, poemaId }
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Erro ao verificar se poema está salvo');
+    }
+  }
+};
+
 export default Api;

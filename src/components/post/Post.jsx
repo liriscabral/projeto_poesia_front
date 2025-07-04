@@ -23,9 +23,9 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', isSavedView = 
   const [editandoComentarioId, setEditandoComentarioId] = React.useState(null);
   const [textoEditado, setTextoEditado] = React.useState('');
   const { usuario } = useAuth();
-  const { savedPosts, savePost, removeSavedPost } = useSavedPosts();
+  const { savedPosts, savePost, removeSavedPost, isPostSaved } = useSavedPosts();
   
-  const isSaved = savedPosts.some(post => post.id === id);
+  const isSaved = isPostSaved(id);
   const categoriaNome = typeof categoria === 'object' && categoria !== null ? categoria.nome : categoria;
 
   React.useEffect(() => {
@@ -102,6 +102,7 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', isSavedView = 
       }
     } catch (error) {
       console.error('Erro ao salvar post:', error);
+      alert('Erro ao salvar/remover poesia. Tente novamente.');
     }
   };
 
