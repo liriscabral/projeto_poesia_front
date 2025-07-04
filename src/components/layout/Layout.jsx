@@ -4,7 +4,8 @@ import './Layout.css';
 import Sidebar from '../sidebar/Sidebar';
 import Feed from '../feed/Feed';
 import PostForm from '../Postform/Postform';
-import { poemaService, curtidaService } from '../../services/api/Api';
+import { poemaService, curtidaService, categoriaService } from '../../services/api/Api';
+import { FaTimes } from 'react-icons/fa';
 
 function Layout() {
   const [isMobile, setIsMobile] = useState(false);
@@ -13,6 +14,8 @@ function Layout() {
   const [poesias, setPoesias] = useState([]);
   const [sortOrder, setSortOrder] = useState('recentes');
   const [curtidas, setCurtidas] = useState({});
+  const [categorias, setCategorias] = useState([]);
+  const [categoriaFiltro, setCategoriaFiltro] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -28,10 +31,21 @@ function Layout() {
   }, []);
 
   useEffect(() => {
+    const carregarCategorias = async () => {
+      try {
+        const response = await categoriaService.listarCategorias();
+        setCategorias(response);
+      } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
+      }
+    };
+    carregarCategorias();
+  }, []);
+
+  useEffect(() => {
     const fetchPoesias = async () => {
       try {
         const response = await poemaService.listarPoesias();
-        // buscar curtidas de cada poesia
         const curtidasObj = {};
         await Promise.all(
           response.map(async (poesia) => {
@@ -44,24 +58,36 @@ function Layout() {
           })
         );
         setCurtidas(curtidasObj);
-        const poesiasOrdenadas = ordenarPoesias(response, sortOrder, curtidasObj);
+        
+        // Aplicar filtro antes de ordenar
+        let poesiasFiltradas = response;
+        if (categoriaFiltro) {
+          poesiasFiltradas = response.filter(poesia => 
+            poesia.categoria && poesia.categoria.id === Number(categoriaFiltro)
+          );
+        }
+        
+        const poesiasOrdenadas = ordenarPoesias(poesiasFiltradas, sortOrder, curtidasObj);
         setPoesias(poesiasOrdenadas);
       } catch (error) {
+        console.error('Erro ao carregar poesias:', error);
         setPoesias([]);
         setCurtidas({});
       }
     };
     fetchPoesias();
-  }, [sortOrder]);
+  }, [sortOrder, categoriaFiltro]);
 
   const ordenarPoesias = (poesias, ordem, curtidasObj = curtidas) => {
+    const poesiasOrdenadas = [...poesias];
+    
     if (ordem === 'maisCurtidas') {
-      return [...poesias].sort((a, b) => (curtidasObj[b.id] || 0) - (curtidasObj[a.id] || 0));
+      return poesiasOrdenadas.sort((a, b) => (curtidasObj[b.id] || 0) - (curtidasObj[a.id] || 0));
     }
     if (ordem === 'menosCurtidas') {
-      return [...poesias].sort((a, b) => (curtidasObj[a.id] || 0) - (curtidasObj[b.id] || 0));
+      return poesiasOrdenadas.sort((a, b) => (curtidasObj[a.id] || 0) - (curtidasObj[b.id] || 0));
     }
-    return [...poesias].sort((a, b) => {
+    return poesiasOrdenadas.sort((a, b) => {
       const dataA = new Date(a.data);
       const dataB = new Date(b.data);
       return ordem === 'recentes' ? dataB - dataA : dataA - dataB;
@@ -70,6 +96,10 @@ function Layout() {
 
   const handleSortChange = (order) => {
     setSortOrder(order);
+  };
+
+  const limparFiltro = () => {
+    setCategoriaFiltro(null);
   };
 
   const toggleSidebar = () => {
@@ -120,6 +150,30 @@ function Layout() {
             >
               Menos Curtidas
             </button>
+            <div className="filter-container">
+              <select
+                value={categoriaFiltro || ''}
+                onChange={(e) => setCategoriaFiltro(e.target.value || null)}
+                className="filter-select"
+              >
+                <option value="">Filtrar categorias</option>
+                {categorias.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.nome}
+                  </option>
+                ))}
+              </select>
+              {categoriaFiltro && (
+                <button 
+                  onClick={limparFiltro}
+                  className="clear-filter-btn"
+                  type="button"
+                  title="Limpar filtro"
+                >
+                  <FaTimes />
+                </button>
+              )}
+            </div>
           </div>
         </div>
         <Feed poesias={poesias} />

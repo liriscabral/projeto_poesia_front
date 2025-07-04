@@ -107,7 +107,6 @@
   }
 }
 
-/* Novo estilo para o cartão principal */
 .layout-main-card {
   background-color: #000;
   border: 1px solid #333;
@@ -172,4 +171,51 @@
   background: #1da1f2;
   border-color: #1da1f2;
   color: #fff;
+}
+
+.filter-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 10px;
+}
+
+.filter-select {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: #000;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 200px;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #1da1f2;
+  box-shadow: 0 0 0 2px rgba(29, 161, 242, 0.2);
+}
+
+.clear-filter-btn {
+  background-color: transparent;
+  border: 1px solid #333;
+  color: #888;
+  padding: 6px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-filter-btn:hover {
+  background: rgba(29, 161, 242, 0.1);
+  border-color: #1da1f2;
+  color: #1da1f2;
 }
