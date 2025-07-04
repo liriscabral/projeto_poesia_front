@@ -1,9 +1,8 @@
-// src/services/api.js
+
 import axios from 'axios';
 
 
-const API_BASE_URL = 'http://localhost:8080'; // Ajuste conforme necessário
-
+const API_BASE_URL = 'http://localhost:8080'; 
 const Api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -99,6 +98,24 @@ export const curtidaService = {
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Erro ao verificar status da curtida');
     }
+  }
+};
+
+export const comentarioService = {
+  criarComentario: async (dados) => {
+    const response = await Api.post('/comentarios', dados);
+    return response.data;
+  },
+  editarComentario: async (id, dados) => {
+    const response = await Api.put(`/comentarios/${id}`, dados);
+    return response.data;
+  },
+  deletarComentario: async (id, autorId) => {
+    await Api.delete(`/comentarios/${id}?autorId=${autorId}`);
+  },
+  listarPorPoema: async (poemaId) => {
+    const response = await Api.get(`/comentarios/poema/${poemaId}`);
+    return response.data;
   }
 };
 
