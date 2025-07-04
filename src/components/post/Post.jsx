@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Post.css';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSavedPosts } from '../../contexts/SavedPostsContext';
 import { curtidaService, comentarioService } from '../../services/api/Api';
+import Alerta from '../alerta/Alerta';
 import { 
   FaRegHeart,
   FaHeart,
@@ -14,19 +15,35 @@ import {
   FaCheck
 } from 'react-icons/fa';
 
-function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedView = false }) {
-  const [liked, setLiked] = React.useState(false);
-  const [likeCount, setLikeCount] = React.useState(0);
-  const [showComentarios, setShowComentarios] = React.useState(false);
-  const [comentarios, setComentarios] = React.useState([]);
-  const [novoComentario, setNovoComentario] = React.useState('');
-  const [editandoComentarioId, setEditandoComentarioId] = React.useState(null);
-  const [textoEditado, setTextoEditado] = React.useState('');
+function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedView = false, onAction }) {
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [showComentarios, setShowComentarios] = useState(false);
+  const [comentarios, setComentarios] = useState([]);
+  const [novoComentario, setNovoComentario] = useState('');
+  const [editandoComentarioId, setEditandoComentarioId] = useState(null);
+  const [textoEditado, setTextoEditado] = useState('');
+  const [alerta, setAlerta] = useState({
+    show: false,
+    message: '',
+    type: 'success'
+  });
   const { usuario } = useAuth();
   const { savedPosts, savePost, removeSavedPost, isPostSaved } = useSavedPosts();
   
   const isSaved = isPostSaved(id);
   const categoriaNome = typeof categoria === 'object' && categoria !== null ? categoria.nome : categoria;
+
+  const mostrarAlerta = (message, type = 'success') => {
+    setAlerta({ show: true, message, type });
+    setTimeout(() => {
+      setAlerta(prev => ({ ...prev, show: false }));
+    }, 5000);
+  };
+
+  const fecharAlerta = () => {
+    setAlerta(prev => ({ ...prev, show: false }));
+  };
 
   React.useEffect(() => {
     const carregarDados = async () => {
@@ -41,49 +58,53 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedV
         setComentarios(comentarios);
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
+        mostrarAlerta('Erro ao carregar dados do post', 'error');
       }
     };
     carregarDados();
   }, [id, usuario.id]);
 
   const formatarData = (comentario) => {
-  const dataCriacao = new Date(comentario.dataCriacao);
-  const horaCriacao = dataCriacao.toLocaleTimeString([], { 
-    hour: '2-digit', 
-    minute: '2-digit',
-    hour12: false  
-  });
-
-  if (comentario.editado && comentario.dataEdicao) {
-    const dataEdicao = new Date(comentario.dataEdicao);
-    const horaEdicao = dataEdicao.toLocaleTimeString([], {
-      hour: '2-digit',
+    const dataCriacao = new Date(comentario.dataCriacao);
+    const horaCriacao = dataCriacao.toLocaleTimeString([], { 
+      hour: '2-digit', 
       minute: '2-digit',
-      hour12: false
+      hour12: false  
     });
+
+    if (comentario.editado && comentario.dataEdicao) {
+      const dataEdicao = new Date(comentario.dataEdicao);
+      const horaEdicao = dataEdicao.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      
+      return (
+        <span className="comentario-tempo">
+          {horaCriacao} • <span className="comentario-editado">editado {horaEdicao}</span>
+        </span>
+      );
+    }
     
-    return (
-      <span className="comentario-tempo">
-        {horaCriacao} • <span className="comentario-editado">editado {horaEdicao}</span>
-      </span>
-    );
-  }
-  
-  return <span className="comentario-tempo">{horaCriacao}</span>;
-};
+    return <span className="comentario-tempo">{horaCriacao}</span>;
+  };
 
   const handleLike = async () => {
     try {
       if (liked) {
         await curtidaService.descurtirPoema(id, usuario.id);
         setLikeCount(prev => prev - 1);
+        mostrarAlerta('Curtida removida', 'success');
       } else {
         await curtidaService.curtirPoema(id, usuario.id);
         setLikeCount(prev => prev + 1);
+        mostrarAlerta('Poesia curtida!', 'success');
       }
       setLiked(!liked);
     } catch (error) {
       console.error('Erro ao atualizar curtida:', error);
+      mostrarAlerta('Erro ao curtir/descurtir', 'error');
     }
   };
 
@@ -91,6 +112,8 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedV
     try {
       if (isSaved) {
         await removeSavedPost(id);
+        mostrarAlerta('Poesia removida dos salvos', 'success');
+        if (onAction) onAction('remove', true);
       } else {
         await savePost({
           id,
@@ -99,10 +122,13 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedV
           titulo,
           categoria
         });
+        mostrarAlerta('Poesia salva com sucesso!', 'success');
+        if (onAction) onAction('save', true);
       }
     } catch (error) {
       console.error('Erro ao salvar post:', error);
-      alert('Erro ao salvar/remover poesia. Tente novamente.');
+      mostrarAlerta('Erro ao salvar/remover poesia', 'error');
+      if (onAction) onAction(isSaved ? 'remove' : 'save', false);
     }
   };
 
@@ -119,8 +145,10 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedV
       });
       setComentarios([...comentarios, comentario]);
       setNovoComentario('');
+      mostrarAlerta('Comentário adicionado!', 'success');
     } catch (error) {
       console.error('Erro ao criar comentário:', error);
+      mostrarAlerta('Erro ao adicionar comentário', 'error');
     }
   };
 
@@ -140,8 +168,10 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedV
         c.id === comentarioId ? comentarioAtualizado : c
       ));
       setEditandoComentarioId(null);
+      mostrarAlerta('Comentário editado com sucesso', 'success');
     } catch (error) {
       console.error('Erro ao editar comentário:', error);
+      mostrarAlerta('Erro ao editar comentário', 'error');
     }
   };
 
@@ -149,18 +179,30 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedV
     try {
       await comentarioService.deletarComentario(comentarioId, usuario.id);
       setComentarios(comentarios.filter(c => c.id !== comentarioId));
+      mostrarAlerta('Comentário removido', 'success');
     } catch (error) {
       console.error('Erro ao deletar comentário:', error);
+      mostrarAlerta('Erro ao remover comentário', 'error');
     }
   };
 
   return (
     <div className="post">
+      {/* Componente Alerta */}
+      {alerta.show && (
+        <Alerta 
+          message={alerta.message} 
+          type={alerta.type} 
+          onClose={fecharAlerta}
+        />
+      )}
+      
       {data && (
         <div style={{ textAlign: 'center', marginBottom: '10px', color: '#8899a6', fontSize: '0.9rem' }}>
           {new Date(data).toLocaleDateString('pt-BR')} - {new Date(data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
         </div>
       )}
+      
       <div className="post-header">
         <strong>{typeof autor === 'object' && autor !== null ? autor.user : autor}</strong>
         {categoriaNome && (
@@ -175,6 +217,7 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedV
       )}
       
       <p className="post-conteudo">{conteudo}</p>
+      
       <div className="post-actions">
         {!isSavedView && (
           <>

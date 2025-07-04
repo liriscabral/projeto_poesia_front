@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 import { useAuth } from '../contexts/AuthContext';
+import Alerta from '../components/alerta/Alerta';
 import './loginUsuario.css';
 
 function LoginUsuario() {
@@ -12,8 +13,24 @@ function LoginUsuario() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [alerta, setAlerta] = useState({
+    show: false,
+    message: '',
+    type: 'success'
+  });
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const mostrarAlerta = (message, type = 'success') => {
+    setAlerta({ show: true, message, type });
+    setTimeout(() => {
+      setAlerta(prev => ({ ...prev, show: false }));
+    }, 5000);
+  };
+
+  const fecharAlerta = () => {
+    setAlerta(prev => ({ ...prev, show: false }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,14 +60,6 @@ function LoginUsuario() {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       if (!emailRegex.test(formData.email)) {
         newErrors.email = 'E-mail inválido!';
-      } else {
-        const domain = formData.email.split('@')[1];
-        const extension = domain.split('.').pop();
-        const validExtensions = ['com', 'br', 'org', 'net', 'edu', 'gov', 'mil', 'int', 'io', 'co', 'me', 'tv', 'info', 'biz', 'name', 'pro', 'museum', 'aero', 'coop', 'jobs', 'mobi', 'travel', 'cat', 'asia', 'tel', 'xxx', 'post', 'arpa', 'root', 'local', 'test', 'example', 'invalid', 'localhost'];
-        
-        if (!validExtensions.includes(extension.toLowerCase())) {
-          newErrors.email = 'E-mail inválido!';
-        }
       }
     }
 
@@ -76,8 +85,6 @@ function LoginUsuario() {
         login: formData.email,
         senha: formData.senha
       };
-
-      console.log('Dados para login:', loginData);
       
       const response = await fetch('http://localhost:8080/acesso/login', {
         method: 'POST',
@@ -89,45 +96,49 @@ function LoginUsuario() {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Login realizado com sucesso:', result);
         
         if (result.usuario) {
           login(result.usuario);
-          setLoading(false);
-          navigate('/home');
+          mostrarAlerta('Login realizado com sucesso!', 'success');
+          setTimeout(() => {
+            navigate('/home');
+          }, 1500);
         } else {
-          setLoading(false);
-          setErrors({ submit: 'Erro: dados do usuário não recebidos!' });
+          mostrarAlerta('Erro: dados do usuário não recebidos!', 'error');
         }
       } else {
         const errorData = await response.text();
-        console.error('Erro no login:', errorData);
-        setLoading(false);
-        
         if (errorData.includes('Login ou senha inválidos')) {
-          setErrors({ submit: 'E-mail ou senha incorretos!' });
+          mostrarAlerta('E-mail ou senha incorretos!', 'error');
         } else {
-          setErrors({ submit: 'Erro ao fazer login. Tente novamente!' });
+          mostrarAlerta('Erro ao fazer login. Tente novamente!', 'error');
         }
       }
-
     } catch (error) {
       console.error('Erro na requisição:', error);
+      mostrarAlerta('Erro de conexão. Verifique se o servidor está rodando!', 'error');
+    } finally {
       setLoading(false);
-      setErrors({ submit: 'Erro de conexão. Verifique se o servidor está rodando!' });
     }
   };
 
   return (
     <div className="login-container">
+      {/* Componente Alerta */}
+      {alerta.show && (
+        <Alerta 
+          message={alerta.message} 
+          type={alerta.type} 
+          onClose={fecharAlerta}
+        />
+      )}
+      
       <div className="login-card">
         <div className="login-header">
           <h1>Verso Livre</h1>
         </div>
         
         <form onSubmit={handleSubmit} className="login-form">
-          {errors.submit && <div className="error-message">{errors.submit}</div>}
-          
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input 
@@ -180,4 +191,4 @@ function LoginUsuario() {
   );
 }
 
-export default LoginUsuario; 
+export default LoginUsuario;

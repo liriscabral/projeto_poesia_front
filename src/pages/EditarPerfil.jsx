@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoArrowBackOutline, IoEyeOutline, IoEyeOffOutline, IoWarningOutline } from 'react-icons/io5';
+import { IoArrowBackOutline, IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 import { useAuth } from '../contexts/AuthContext';
+import Alerta from '../components/alerta/Alerta';
 import './EditarPerfil.css';
 
 function EditarPerfil() {
   const navigate = useNavigate();
-  const { usuario, updateUser, logout } = useAuth();
+  const { usuario, updateUser } = useAuth();
   
   const [formData, setFormData] = useState({
     nome: usuario?.nome || '',
@@ -21,7 +22,22 @@ function EditarPerfil() {
   const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [alerta, setAlerta] = useState({
+    show: false,
+    message: '',
+    type: 'success'
+  });
 
+  const mostrarAlerta = (message, type = 'success') => {
+    setAlerta({ show: true, message, type });
+    setTimeout(() => {
+      setAlerta(prev => ({ ...prev, show: false }));
+    }, 5000);
+  };
+
+  const fecharAlerta = () => {
+    setAlerta(prev => ({ ...prev, show: false }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -30,7 +46,6 @@ function EditarPerfil() {
       [name]: value
     }));
     
-    // Limpar erro do campo quando o usuário começar a digitar
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -52,12 +67,10 @@ function EditarPerfil() {
       newErrors.user = 'Nome de usuário deve ter pelo menos 3 caracteres';
     }
 
-    // Se o usuário preencheu nova senha, deve preencher senha atual
     if (formData.novaSenha && !formData.senhaAtual) {
       newErrors.senhaAtual = 'Senha atual é obrigatória para alterar a senha';
     }
 
-    // Se preencheu senha atual, deve preencher nova senha
     if (formData.senhaAtual && !formData.novaSenha) {
       newErrors.novaSenha = 'Nova senha é obrigatória';
     }
@@ -90,11 +103,10 @@ function EditarPerfil() {
         email: usuario.email
       };
 
-      // Só incluir senha se o usuário preencheu
       if (formData.senhaAtual && formData.novaSenha) {
         updateData.acesso = {
-          login: formData.senhaAtual, // senha atual
-          senha: formData.novaSenha   // nova senha
+          login: formData.senhaAtual,
+          senha: formData.novaSenha
         };
       }
 
@@ -109,19 +121,21 @@ function EditarPerfil() {
       if (response.ok) {
         const updatedUser = await response.json();
         updateUser(updatedUser);
-        alert('Perfil atualizado com sucesso!');
-        navigate('/perfil');
+        mostrarAlerta('Perfil atualizado com sucesso!', 'success');
+        setTimeout(() => {
+          navigate('/perfil');
+        }, 1500);
       } else {
         const errorData = await response.json();
         if (errorData.message) {
-          alert(`Erro: ${errorData.message}`);
+          mostrarAlerta(`Erro: ${errorData.message}`, 'error');
         } else {
-          alert('Erro ao atualizar perfil');
+          mostrarAlerta('Erro ao atualizar perfil', 'error');
         }
       }
     } catch (error) {
       console.error('Erro ao atualizar perfil:', error);
-      alert('Erro de conexão. Verifique se o servidor está rodando.');
+      mostrarAlerta('Erro de conexão. Verifique se o servidor está rodando.', 'error');
     } finally {
       setLoading(false);
     }
@@ -133,6 +147,15 @@ function EditarPerfil() {
 
   return (
     <div className="editar-perfil-container">
+      {/* Componente Alerta */}
+      {alerta.show && (
+        <Alerta 
+          message={alerta.message} 
+          type={alerta.type} 
+          onClose={fecharAlerta}
+        />
+      )}
+      
       <div className="editar-perfil-card">
         <div className="editar-perfil-header">
           <h1>Editar Perfil</h1>
@@ -245,11 +268,10 @@ function EditarPerfil() {
               {loading ? 'Salvando...' : 'Salvar Alterações'}
             </button>
           </div>
-
         </form>
       </div>
     </div>
   );
 }
 
-export default EditarPerfil; 
+export default EditarPerfil;

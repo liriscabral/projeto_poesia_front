@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import './Layout.css';
 import Sidebar from '../sidebar/Sidebar';
@@ -6,6 +6,7 @@ import Feed from '../feed/Feed';
 import PostForm from '../Postform/Postform';
 import { poemaService, curtidaService, categoriaService } from '../../services/api/Api';
 import { FaTimes } from 'react-icons/fa';
+import Alerta from '../alerta/Alerta';
 
 function Layout() {
   const [isMobile, setIsMobile] = useState(false);
@@ -16,6 +17,26 @@ function Layout() {
   const [curtidas, setCurtidas] = useState({});
   const [categorias, setCategorias] = useState([]);
   const [categoriaFiltro, setCategoriaFiltro] = useState(null);
+  
+  // Estado para controlar os alertas
+  const [alerta, setAlerta] = useState({
+    show: false,
+    message: '',
+    type: 'success' 
+  });
+
+  // Função para mostrar alerta
+  const mostrarAlerta = (message, type = 'success') => {
+    setAlerta({ show: true, message, type });
+    setTimeout(() => {
+      setAlerta(prev => ({ ...prev, show: false }));
+    }, 5000);
+  };
+
+  // Função para fechar alerta manualmente
+  const fecharAlerta = () => {
+    setAlerta(prev => ({ ...prev, show: false }));
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,6 +58,7 @@ function Layout() {
         setCategorias(response);
       } catch (error) {
         console.error('Erro ao carregar categorias:', error);
+        mostrarAlerta('Erro ao carregar categorias', 'error');
       }
     };
     carregarCategorias();
@@ -47,6 +69,7 @@ function Layout() {
       try {
         const response = await poemaService.listarPoesias();
         const curtidasObj = {};
+        
         await Promise.all(
           response.map(async (poesia) => {
             try {
@@ -57,9 +80,9 @@ function Layout() {
             }
           })
         );
+        
         setCurtidas(curtidasObj);
         
-        // Aplicar filtro antes de ordenar
         let poesiasFiltradas = response;
         if (categoriaFiltro) {
           poesiasFiltradas = response.filter(poesia => 
@@ -71,6 +94,7 @@ function Layout() {
         setPoesias(poesiasOrdenadas);
       } catch (error) {
         console.error('Erro ao carregar poesias:', error);
+        mostrarAlerta('Erro ao carregar poesias', 'error');
         setPoesias([]);
         setCurtidas({});
       }
@@ -96,10 +120,22 @@ function Layout() {
 
   const handleSortChange = (order) => {
     setSortOrder(order);
+    mostrarAlerta(`Ordenação alterada para ${getSortLabel(order)}`, 'success');
+  };
+
+  const getSortLabel = (order) => {
+    switch(order) {
+      case 'recentes': return 'Mais Recentes';
+      case 'antigos': return 'Mais Antigos';
+      case 'maisCurtidas': return 'Mais Curtidas';
+      case 'menosCurtidas': return 'Menos Curtidas';
+      default: return order;
+    }
   };
 
   const limparFiltro = () => {
     setCategoriaFiltro(null);
+    mostrarAlerta('Filtro removido', 'success');
   };
 
   const toggleSidebar = () => {
@@ -111,17 +147,32 @@ function Layout() {
       const response = await poemaService.listarPoesias();
       const poesiasOrdenadas = ordenarPoesias(response, sortOrder);
       setPoesias(poesiasOrdenadas);
+      mostrarAlerta('Poema publicado com sucesso!', 'success');
     } catch (error) {
       console.error('Erro ao recarregar poesias:', error);
+      mostrarAlerta('Erro ao atualizar o feed', 'error');
     }
   };
 
   return (
     <div className="layout">
+      {/* Componente Alerta */}
+      {alerta.show && (
+        <Alerta 
+          message={alerta.message} 
+          type={alerta.type} 
+          onClose={fecharAlerta}
+        />
+      )}
+      
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="layout-main-card">
         <div className="post-form-container">
-          <PostForm onPublish={adicionarPoesia} usuarioId={usuario.id} />
+          <PostForm 
+            onPublish={adicionarPoesia} 
+            usuarioId={usuario.id} 
+            mostrarAlerta={mostrarAlerta} // Passando a função para o PostForm
+          />
         </div>
         <div className="feed-header">
           <div className="sort-controls">
@@ -153,7 +204,14 @@ function Layout() {
             <div className="filter-container">
               <select
                 value={categoriaFiltro || ''}
-                onChange={(e) => setCategoriaFiltro(e.target.value || null)}
+                onChange={(e) => {
+                  setCategoriaFiltro(e.target.value || null);
+                  if (e.target.value) {
+                    mostrarAlerta(`Filtro aplicado: ${
+                      categorias.find(c => c.id == e.target.value)?.nome
+                    }`, 'success');
+                  }
+                }}
                 className="filter-select"
               >
                 <option value="">Filtrar categorias</option>
@@ -176,7 +234,7 @@ function Layout() {
             </div>
           </div>
         </div>
-        <Feed poesias={poesias} />
+        <Feed poesias={poesias} mostrarAlerta={mostrarAlerta} />
       </div>
     </div>
   );

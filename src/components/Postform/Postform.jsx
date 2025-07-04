@@ -3,7 +3,7 @@ import './Postform.css';
 import { categoriaService } from '../../services/api/Api';
 import { poemaService } from '../../services/api/Api';
 
-function PostForm({ usuarioId, onPublish }) {
+function PostForm({ usuarioId, onPublish, mostrarAlerta }) {  // Adicionamos mostrarAlerta nas props
   const [texto, setTexto] = useState('');
   const [titulo, setTitulo] = useState('');
   const [categoria, setCategoria] = useState('');
@@ -20,7 +20,7 @@ function PostForm({ usuarioId, onPublish }) {
         setCategorias(response);
       } catch (error) {
         console.error('Erro ao carregar categorias:', error);
-        alert('Erro ao carregar categorias. Tente recarregar a página.');
+        mostrarAlerta('Erro ao carregar categorias. Tente recarregar a página.', 'error');
       } finally {
         setLoading(false);
       }
@@ -31,15 +31,15 @@ function PostForm({ usuarioId, onPublish }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!titulo.trim()) {
-      alert('Por favor, insira um título para sua poesia');
+      mostrarAlerta('Por favor, insira um título para sua poesia', 'warning');
       return;
     }
     if (!categoria) {
-      alert('Por favor, selecione ou crie uma categoria');
+      mostrarAlerta('Por favor, selecione ou crie uma categoria', 'warning');
       return;
     }
     if (!texto.trim()) {
-      alert('Por favor, escreva sua poesia antes de publicar');
+      mostrarAlerta('Por favor, escreva sua poesia antes de publicar', 'warning');
       return;
     }
     try {
@@ -53,12 +53,12 @@ function PostForm({ usuarioId, onPublish }) {
       setTexto('');
       setTitulo('');
       setCategoria('');
-      alert('Poesia publicada com sucesso!');
+      mostrarAlerta('Poesia publicada com sucesso!', 'success');
       if (onPublish) {
         onPublish();
       }
     } catch (error) {
-      alert(error.message || 'Erro ao publicar poesia. Tente novamente.');
+      mostrarAlerta(error.message || 'Erro ao publicar poesia. Tente novamente.', 'error');
     } finally {
       setLoading(false);
     }
@@ -67,11 +67,11 @@ function PostForm({ usuarioId, onPublish }) {
   const handleAddCategoria = async (e) => {
     e.preventDefault();
     if (!novaCategoria.trim()) {
-      alert('Por favor, insira um nome para a nova categoria');
+      mostrarAlerta('Por favor, insira um nome para a nova categoria', 'warning');
       return;
     }
     if (categorias.some(cat => cat.nome.toLowerCase() === novaCategoria.toLowerCase())) {
-      alert('Esta categoria já existe');
+      mostrarAlerta('Esta categoria já existe', 'warning');
       return;
     }
     try {
@@ -80,9 +80,9 @@ function PostForm({ usuarioId, onPublish }) {
       setCategorias([...categorias, nova]);
       setCategoria(nova.id);
       setNovaCategoria('');
-      alert('Nova categoria adicionada!');
+      mostrarAlerta('Nova categoria adicionada com sucesso!', 'success');
     } catch (error) {
-      alert(error.message || 'Erro ao adicionar nova categoria');
+      mostrarAlerta(error.message || 'Erro ao adicionar nova categoria', 'error');
     } finally {
       setIsAddingCategory(false);
     }

@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import './Alerta.css';
+import { FaCheck, FaTimes, FaExclamation } from 'react-icons/fa';
 
 const Alerta = ({ message, type, onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
-    }, 3000);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, [onClose]);
@@ -13,20 +14,20 @@ const Alerta = ({ message, type, onClose }) => {
   const getIcon = () => {
     switch(type) {
       case 'error':
-        return '❌';
+        return <FaTimes className="alert-icon" />;
       case 'warning':
-        return '⚠️';
+        return <FaExclamation className="alert-icon" />;
       case 'success':
-        return '✅';
+        return <FaCheck className="alert-icon" />;
       default:
         return null;
     }
   };
 
   return (
-    <div className={`alert alert-${type}`}>
+    <div className={`alerta alert-${type}`}>
       <div className="alert-content">
-        <span className="alert-icon">{getIcon()}</span>
+        {getIcon()}
         <span>{message}</span>
       </div>
       <button 
@@ -34,7 +35,7 @@ const Alerta = ({ message, type, onClose }) => {
         onClick={onClose}
         aria-label="Fechar alerta"
       >
-        ×
+        <FaTimes />
       </button>
     </div>
   );
