@@ -4,6 +4,8 @@ import { IoLogOutOutline, IoTrashOutline, IoArrowBackOutline, IoCreateOutline, I
 import { useAuth } from '../contexts/AuthContext';
 import './PerfilUsuario.css';
 import { curtidaService } from '../services/api/Api';
+import { FaRegHeart, FaHeart, FaRegComment } from 'react-icons/fa';
+import { comentarioService } from '../services/api/Api';
 
 function PerfilUsuario() {
   const [activeTab, setActiveTab] = useState('categorias');
@@ -12,6 +14,8 @@ function PerfilUsuario() {
   const [loading, setLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState('recentes');
   const [curtidas, setCurtidas] = useState({});
+  const [comentariosAbertos, setComentariosAbertos] = useState({});
+  const [comentarios, setComentarios] = useState({});
   const navigate = useNavigate();
   const { usuario, logout } = useAuth();
 
@@ -203,6 +207,18 @@ function PerfilUsuario() {
     }
   };
 
+  const toggleComentarios = async (poesiaId) => {
+    setComentariosAbertos(prev => ({ ...prev, [poesiaId]: !prev[poesiaId] }));
+    if (!comentarios[poesiaId]) {
+      try {
+        const lista = await comentarioService.listarPorPoema(poesiaId);
+        setComentarios(prev => ({ ...prev, [poesiaId]: lista }));
+      } catch (e) {
+        setComentarios(prev => ({ ...prev, [poesiaId]: [] }));
+      }
+    }
+  };
+
   useEffect(() => {
     if (usuario) {
       carregarDados();
@@ -314,40 +330,71 @@ function PerfilUsuario() {
                 ) : (
                   <div className="poesias-list">
                     {poesias.map((poesia) => (
-                      <div key={poesia.id} className="poesia-item" style={{ position: 'relative' }}>
-                        <span style={{ position: 'absolute', top: 10, right: 10, display: 'flex', alignItems: 'center', color: '#ff4d6d', fontWeight: 600, fontSize: '1rem', zIndex: 2 }}>
-                          <IoHeartOutline style={{ marginRight: '4px' }} />
-                          {curtidas[poesia.id] || 0}
-                        </span>
-                        <div className="poesia-info">
-                          <div style={{ marginBottom: '6px' }}>
-                            {poesia.titulo && poesia.categoria ? (
-                              <h3 className="poesia-titulo" style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>
-                                {poesia.titulo} - {typeof poesia.categoria === 'object' && poesia.categoria !== null ? poesia.categoria.nome : poesia.categoria}
-                              </h3>
-                            ) : poesia.titulo ? (
-                              <h3 className="poesia-titulo" style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>
-                                {poesia.titulo}
-                              </h3>
-                            ) : poesia.categoria ? (
-                              <h3 className="poesia-titulo" style={{ margin: 0, color: '#fff', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.5px' }}>
-                                {typeof poesia.categoria === 'object' && poesia.categoria !== null ? poesia.categoria.nome : poesia.categoria}
-                              </h3>
-                            ) : null}
+                      <React.Fragment key={poesia.id}>
+                        <div className="post" style={{ position: 'relative' }}>
+                          <div style={{ textAlign: 'center', marginBottom: '10px', color: '#8899a6', fontSize: '0.9rem' }}>
+                            {new Date(poesia.data).toLocaleDateString('pt-BR')} - {new Date(poesia.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                           </div>
-                          <p className="poesia-conteudo" style={{ whiteSpace: 'pre-wrap' }}>{poesia.conteudo}</p>
-                          <span className="poesia-data">
-                            {new Date(poesia.data).toLocaleDateString('pt-BR')}
-                          </span>
+                          <div className="post-header" style={{ justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
+                            {poesia.titulo && (
+                              <h4 className="post-titulo" style={{ margin: 0 }}>{poesia.titulo}</h4>
+                            )}
+                            {poesia.categoria && (
+                              <span className="post-categoria">
+                                {typeof poesia.categoria === 'object' && poesia.categoria !== null ? poesia.categoria.nome : poesia.categoria}
+                              </span>
+                            )}
+                          </div>
+                          <p className="post-conteudo" style={{ whiteSpace: 'pre-wrap' }}>{poesia.conteudo}</p>
+                          <div className="post-actions" style={{ gap: '32px', marginTop: 15, paddingTop: 10, borderTop: '1px solid #2f3336', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+                              <div className="action-btn" style={{ cursor: 'default' }}>
+                                <FaRegHeart />
+                                <span className="action-count">{curtidas[poesia.id] || 0}</span>
+                              </div>
+                              <button 
+                                onClick={() => toggleComentarios(poesia.id)}
+                                className="action-btn"
+                              >
+                                <FaRegComment />
+                                <span>{comentarios[poesia.id]?.length || 0} comentários</span>
+                              </button>
+                            </div>
+                            <button 
+                              className="action-btn trash"
+                              onClick={() => deletarPoesia(poesia.id)}
+                            >
+                              <IoTrashOutline size={16} />
+                            </button>
+                          </div>
+                          {comentariosAbertos[poesia.id] && (
+                            <div className="comentarios-container">
+                              <div className="lista-comentarios">
+                                {comentarios[poesia.id] && comentarios[poesia.id].length > 0 ? (
+                                  comentarios[poesia.id].map(comentario => (
+                                    <div key={comentario.id} className="comentario">
+                                      <div className="comentario-header">
+                                        <strong>{comentario.autor?.nome || 'Anônimo'}</strong>
+                                        <span className="comentario-hora">
+                                          {new Date(comentario.dataCriacao).toLocaleDateString('pt-BR')} {new Date(comentario.dataCriacao).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                        </span>
+                                      </div>
+                                      <div>
+                                        <p className="comentario-texto">{comentario.texto}</p>
+                                        {comentario.editado && (
+                                          <span className="comentario-editado">(editado)</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <span style={{ color: '#aaa', fontSize: '0.9rem' }}>Nenhum comentário ainda.</span>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <button 
-                          className="delete-btn"
-                          style={{ position: 'absolute', bottom: 10, right: 10, zIndex: 2 }}
-                          onClick={() => deletarPoesia(poesia.id)}
-                        >
-                          <IoTrashOutline size={16} />
-                        </button>
-                      </div>
+                      </React.Fragment>
                     ))}
                   </div>
                 )}

@@ -14,7 +14,7 @@ import {
   FaCheck
 } from 'react-icons/fa';
 
-function Post({ id, autor, conteudo, titulo = '', categoria = '', isSavedView = false }) {
+function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedView = false }) {
   const [liked, setLiked] = React.useState(false);
   const [likeCount, setLikeCount] = React.useState(0);
   const [showComentarios, setShowComentarios] = React.useState(false);
@@ -156,6 +156,11 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', isSavedView = 
 
   return (
     <div className="post">
+      {data && (
+        <div style={{ textAlign: 'center', marginBottom: '10px', color: '#8899a6', fontSize: '0.9rem' }}>
+          {new Date(data).toLocaleDateString('pt-BR')} - {new Date(data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+        </div>
+      )}
       <div className="post-header">
         <strong>{typeof autor === 'object' && autor !== null ? autor.user : autor}</strong>
         {categoriaNome && (

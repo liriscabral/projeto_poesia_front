@@ -20,6 +20,7 @@ function Feed({ poesias, isSavedView = false }) {
               conteudo={p.conteudo}
               titulo={p.titulo}
               categoria={p.categoria}
+              data={p.data}
               isSavedView={isSavedView}
             />
           );
