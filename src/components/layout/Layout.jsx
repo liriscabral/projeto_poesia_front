@@ -4,7 +4,7 @@ import './Layout.css';
 import Sidebar from '../sidebar/Sidebar';
 import Feed from '../feed/Feed';
 import PostForm from '../Postform/Postform';
-import { poemaService } from '../../services/api/Api';
+import { poemaService, curtidaService } from '../../services/api/Api';
 
 function Layout() {
   const [isMobile, setIsMobile] = useState(false);
@@ -12,6 +12,7 @@ function Layout() {
   const { usuario } = useAuth();
   const [poesias, setPoesias] = useState([]);
   const [sortOrder, setSortOrder] = useState('recentes');
+  const [curtidas, setCurtidas] = useState({});
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,16 +31,36 @@ function Layout() {
     const fetchPoesias = async () => {
       try {
         const response = await poemaService.listarPoesias();
-        const poesiasOrdenadas = ordenarPoesias(response, sortOrder);
+        // buscar curtidas de cada poesia
+        const curtidasObj = {};
+        await Promise.all(
+          response.map(async (poesia) => {
+            try {
+              const qtd = await curtidaService.getContagemCurtidas(poesia.id);
+              curtidasObj[poesia.id] = qtd;
+            } catch {
+              curtidasObj[poesia.id] = 0;
+            }
+          })
+        );
+        setCurtidas(curtidasObj);
+        const poesiasOrdenadas = ordenarPoesias(response, sortOrder, curtidasObj);
         setPoesias(poesiasOrdenadas);
       } catch (error) {
         setPoesias([]);
+        setCurtidas({});
       }
     };
     fetchPoesias();
   }, [sortOrder]);
 
-  const ordenarPoesias = (poesias, ordem) => {
+  const ordenarPoesias = (poesias, ordem, curtidasObj = curtidas) => {
+    if (ordem === 'maisCurtidas') {
+      return [...poesias].sort((a, b) => (curtidasObj[b.id] || 0) - (curtidasObj[a.id] || 0));
+    }
+    if (ordem === 'menosCurtidas') {
+      return [...poesias].sort((a, b) => (curtidasObj[a.id] || 0) - (curtidasObj[b.id] || 0));
+    }
     return [...poesias].sort((a, b) => {
       const dataA = new Date(a.data);
       const dataB = new Date(b.data);
@@ -86,6 +107,18 @@ function Layout() {
               onClick={() => handleSortChange('antigos')}
             >
               Mais Antigos
+            </button>
+            <button
+              className={`sort-btn ${sortOrder === 'maisCurtidas' ? 'active' : ''}`}
+              onClick={() => handleSortChange('maisCurtidas')}
+            >
+              Mais Curtidas
+            </button>
+            <button
+              className={`sort-btn ${sortOrder === 'menosCurtidas' ? 'active' : ''}`}
+              onClick={() => handleSortChange('menosCurtidas')}
+            >
+              Menos Curtidas
             </button>
           </div>
         </div>
