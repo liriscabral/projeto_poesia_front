@@ -27,8 +27,6 @@ function Sidebar({ isOpen, onClose }) {
   const menuItems = [
     { id: 'inicio', label: 'Início', path: '/home', 
       icon: location.pathname === '/home' ? <IoHomeSharp size={24} /> : <IoHomeOutline size={24} /> },
-    { id: 'curtidas', label: 'Curtidas', path: '/curtidas', 
-      icon: location.pathname === '/curtidas' ? <IoHeartSharp size={24} /> : <IoHeartOutline size={24} /> },
     { id: 'salvos', label: 'Salvos', path: '/salvos', 
       icon: location.pathname === '/salvos' ? <IoBookmarkSharp size={24} /> : <IoBookmarkOutline size={24} /> },
     { id: 'perfil', label: 'Perfil', path: '/perfil', 
