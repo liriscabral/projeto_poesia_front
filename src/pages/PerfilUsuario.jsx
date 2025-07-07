@@ -32,6 +32,7 @@ function PerfilUsuario() {
   const { usuario, logout } = useAuth();
   const [modalConfirm, setModalConfirm] = useState({ open: false, categoriaId: null });
   const [modalConfirmPoesia, setModalConfirmPoesia] = useState({ open: false, poesiaId: null });
+  const [comentariosCount, setComentariosCount] = useState({});
 
   useEffect(() => {
     carregarDados();
@@ -74,6 +75,7 @@ function PerfilUsuario() {
       if (response.status === 204) {
         setPoesias([]);
         setCurtidas({});
+        setComentariosCount({});
         return;
       }
 
@@ -86,6 +88,7 @@ function PerfilUsuario() {
       setPoesias(poesiasOrdenadas);
 
       const curtidasObj = {};
+      const comentariosObj = {};
       await Promise.all(
         poesiasOrdenadas.map(async (poesia) => {
           try {
@@ -94,13 +97,21 @@ function PerfilUsuario() {
           } catch {
             curtidasObj[poesia.id] = 0;
           }
+          try {
+            const lista = await comentarioService.listarPorPoema(poesia.id);
+            comentariosObj[poesia.id] = lista.length;
+          } catch {
+            comentariosObj[poesia.id] = 0;
+          }
         })
       );
       setCurtidas(curtidasObj);
+      setComentariosCount(comentariosObj);
     } catch (error) {
       console.error('Erro ao carregar poesias:', error);
       setPoesias([]);
       setCurtidas({});
+      setComentariosCount({});
     }
   };
 
@@ -414,7 +425,7 @@ function PerfilUsuario() {
                                 className="action-btn"
                               >
                                 <FaRegComment />
-                                <span>{comentarios[poesia.id]?.length || 0} comentários</span>
+                                <span>{comentariosCount[poesia.id] || 0} comentários</span>
                               </button>
                             </div>
                             <button 
