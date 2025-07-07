@@ -120,7 +120,6 @@ function Layout() {
 
   const handleSortChange = (order) => {
     setSortOrder(order);
-    mostrarAlerta(`Ordenação alterada para ${getSortLabel(order)}`, 'success');
   };
 
   const getSortLabel = (order) => {
@@ -135,7 +134,7 @@ function Layout() {
 
   const limparFiltro = () => {
     setCategoriaFiltro(null);
-    mostrarAlerta('Filtro removido', 'success');
+    // mostrarAlerta('Filtro removido', 'success'); // Removido o alerta
   };
 
   const toggleSidebar = () => {
@@ -206,11 +205,11 @@ function Layout() {
                 value={categoriaFiltro || ''}
                 onChange={(e) => {
                   setCategoriaFiltro(e.target.value || null);
-                  if (e.target.value) {
-                    mostrarAlerta(`Filtro aplicado: ${
-                      categorias.find(c => c.id == e.target.value)?.nome
-                    }`, 'success');
-                  }
+                  // if (e.target.value) {
+                  //   mostrarAlerta(`Filtro aplicado: ${
+                  //     categorias.find(c => c.id == e.target.value)?.nome
+                  //   }`, 'success');
+                  // }
                 }}
                 className="filter-select"
               >

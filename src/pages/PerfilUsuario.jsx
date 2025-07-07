@@ -6,6 +6,8 @@ import './PerfilUsuario.css';
 import { curtidaService } from '../services/api/Api';
 import { FaRegHeart, FaHeart, FaRegComment } from 'react-icons/fa';
 import { comentarioService } from '../services/api/Api';
+import Alerta from '../components/alerta/Alerta';
+import ConfirmModal from '../components/layout/ConfirmModal';
 
 function PerfilUsuario() {
   const [activeTab, setActiveTab] = useState('categorias');
@@ -16,8 +18,20 @@ function PerfilUsuario() {
   const [curtidas, setCurtidas] = useState({});
   const [comentariosAbertos, setComentariosAbertos] = useState({});
   const [comentarios, setComentarios] = useState({});
+  const [alerta, setAlerta] = useState({ show: false, message: '', type: 'success' });
+  const mostrarAlerta = (message, type = 'success') => {
+    setAlerta({ show: true, message, type });
+    setTimeout(() => {
+      setAlerta(prev => ({ ...prev, show: false }));
+    }, 5000);
+  };
+  const fecharAlerta = () => {
+    setAlerta(prev => ({ ...prev, show: false }));
+  };
   const navigate = useNavigate();
   const { usuario, logout } = useAuth();
+  const [modalConfirm, setModalConfirm] = useState({ open: false, categoriaId: null });
+  const [modalConfirmPoesia, setModalConfirmPoesia] = useState({ open: false, poesiaId: null });
 
   useEffect(() => {
     carregarDados();
@@ -104,13 +118,19 @@ function PerfilUsuario() {
     });
   };
 
+  const handleDeleteCategoria = (categoriaId) => {
+    setModalConfirm({ open: true, categoriaId });
+  };
+
+  const confirmDeleteCategoria = async () => {
+    const categoriaId = modalConfirm.categoriaId;
+    setModalConfirm({ open: false, categoriaId: null });
+    await deletarCategoria(categoriaId);
+  };
+
   const deletarCategoria = async (categoriaId) => {
     if (!categoriaId) {
-      alert('Erro: ID da categoria não encontrado');
-      return;
-    }
-
-    if (!window.confirm('Tem certeza que deseja excluir esta categoria?')) {
+      mostrarAlerta('Erro: ID da categoria não encontrado', 'error');
       return;
     }
 
@@ -126,28 +146,40 @@ function PerfilUsuario() {
       if (response.ok) {
         console.log('Categoria deletada com sucesso');
         await carregarCategorias();
+        mostrarAlerta('Categoria deletada com sucesso!', 'success');
       } else {
         const errorText = await response.text();
         console.error('Erro na resposta:', errorText);
 
         if (errorText.includes('poesias associadas')) {
-          alert('Não é possível excluir esta categoria pois existem poesias associadas a ela. Delete as poesias primeiro.');
+          mostrarAlerta('Não é possível excluir esta categoria pois existem poesias associadas a ela. Delete as poesias primeiro.', 'error');
         } else if (errorText.includes('permissão')) {
-          alert('Você não tem permissão para excluir esta categoria.');
+          mostrarAlerta('Você não tem permissão para excluir esta categoria.', 'error');
         } else if (errorText.includes('não encontrada')) {
-          alert('Categoria não encontrada.');
+          mostrarAlerta('Categoria não encontrada.', 'error');
         } else {
-          alert(`Erro ao excluir categoria: ${errorText}`);
+          mostrarAlerta(`Erro ao excluir categoria: ${errorText}`, 'error');
         }
       }
     } catch (error) {
       console.error('Erro ao deletar categoria:', error);
-      alert('Erro de conexão ao excluir categoria. Verifique se o servidor está rodando.');
+      mostrarAlerta('Erro de conexão ao excluir categoria. Verifique se o servidor está rodando.', 'error');
     }
   };
 
+  const handleDeletePoesia = (poesiaId) => {
+    setModalConfirmPoesia({ open: true, poesiaId });
+  };
+
+  const confirmDeletePoesia = async () => {
+    const poesiaId = modalConfirmPoesia.poesiaId;
+    setModalConfirmPoesia({ open: false, poesiaId: null });
+    await deletarPoesia(poesiaId);
+  };
+
   const deletarPoesia = async (poesiaId) => {
-    if (!window.confirm('Tem certeza que deseja excluir esta poesia?')) {
+    if (!poesiaId) {
+      mostrarAlerta('Erro: ID da poesia não encontrado', 'error');
       return;
     }
 
@@ -169,16 +201,16 @@ function PerfilUsuario() {
         console.error('Erro na resposta:', errorText);
 
         if (errorText.includes('permissão')) {
-          alert('Você não tem permissão para excluir esta poesia.');
+          mostrarAlerta('Você não tem permissão para excluir esta poesia.', 'error');
         } else if (errorText.includes('não encontrado')) {
-          alert('Poesia não encontrada.');
+          mostrarAlerta('Poesia não encontrada.', 'error');
         } else {
-          alert(`Erro ao excluir poesia: ${errorText}`);
+          mostrarAlerta(`Erro ao excluir poesia: ${errorText}`, 'error');
         }
       }
     } catch (error) {
       console.error('Erro ao deletar poesia:', error);
-      alert('Erro de conexão ao excluir poesia. Verifique se o servidor está rodando.');
+      mostrarAlerta('Erro de conexão ao excluir poesia. Verifique se o servidor está rodando.', 'error');
     }
   };
 
@@ -227,6 +259,31 @@ function PerfilUsuario() {
 
   return (
     <div className="perfil-container">
+      {alerta.show && (
+        <Alerta 
+          message={alerta.message} 
+          type={alerta.type} 
+          onClose={fecharAlerta}
+        />
+      )}
+      {modalConfirm.open && (
+        <ConfirmModal
+          open={modalConfirm.open}
+          title="Excluir Categoria"
+          message="Tem certeza que deseja excluir esta categoria?"
+          onConfirm={confirmDeleteCategoria}
+          onCancel={() => setModalConfirm({ open: false, categoriaId: null })}
+        />
+      )}
+      {modalConfirmPoesia.open && (
+        <ConfirmModal
+          open={modalConfirmPoesia.open}
+          title="Excluir Poesia"
+          message="Tem certeza que deseja excluir esta poesia?"
+          onConfirm={confirmDeletePoesia}
+          onCancel={() => setModalConfirmPoesia({ open: false, poesiaId: null })}
+        />
+      )}
       <div className="perfil-card">
         <div className="perfil-header">
           <div>
@@ -279,7 +336,7 @@ function PerfilUsuario() {
                         <span className="categoria-nome">{categoria.nome}</span>
                         <button 
                           className="delete-btn"
-                          onClick={() => deletarCategoria(categoria.id)}
+                          onClick={() => handleDeleteCategoria(categoria.id)}
                         >
                           <IoTrashOutline size={16} />
                         </button>
@@ -362,7 +419,7 @@ function PerfilUsuario() {
                             </div>
                             <button 
                               className="action-btn trash"
-                              onClick={() => deletarPoesia(poesia.id)}
+                              onClick={() => handleDeletePoesia(poesia.id)}
                             >
                               <IoTrashOutline size={16} />
                             </button>
