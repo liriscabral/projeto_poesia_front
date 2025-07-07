@@ -95,11 +95,9 @@ function Post({ id, autor, conteudo, titulo = '', categoria = '', data, isSavedV
       if (liked) {
         await curtidaService.descurtirPoema(id, usuario.id);
         setLikeCount(prev => prev - 1);
-        mostrarAlerta('Curtida removida', 'success');
       } else {
         await curtidaService.curtirPoema(id, usuario.id);
         setLikeCount(prev => prev + 1);
-        mostrarAlerta('Poesia curtida!', 'success');
       }
       setLiked(!liked);
     } catch (error) {
