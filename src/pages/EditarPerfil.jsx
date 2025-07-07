@@ -83,6 +83,10 @@ function EditarPerfil() {
       newErrors.confirmarSenha = 'Senhas não coincidem';
     }
 
+    if (formData.novaSenha && formData.senhaAtual && formData.novaSenha === formData.senhaAtual) {
+      newErrors.novaSenha = 'A nova senha não pode ser igual à senha atual';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };

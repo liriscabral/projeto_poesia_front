@@ -7,7 +7,7 @@ import { curtidaService } from '../services/api/Api';
 import { FaRegHeart, FaHeart, FaRegComment } from 'react-icons/fa';
 import { comentarioService } from '../services/api/Api';
 import Alerta from '../components/alerta/Alerta';
-import ConfirmModal from '../components/layout/ConfirmModal';
+import ConfirmModal from '../components/layout/ConfirmModal.jsx';
 
 function PerfilUsuario() {
   const [activeTab, setActiveTab] = useState('categorias');
